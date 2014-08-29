@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; protomol_addon 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="protomol_addon 1.0 documentation" href="index.html" />
+    <link rel="next" title="Basic Usage" href="Basic Usage.html" />
+    <link rel="prev" title="Welcome to protomol_addon’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Basic Usage.html" title="Basic Usage"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to protomol_addon’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">protomol_addon 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Installation consists of the following steps.</p>
+<ol class="arabic simple">
+<li>Download the original ProtoMol source code for your operating system from <a class="reference external" href="http://sourceforge.net/projects/protomol/files/ProtoMol/Protomol%203.3/">sourceforge</a> page. Extract the source code to a directory, <tt class="docutils literal"><span class="pre">protomol_orig</span></tt> for instance.</li>
+</ol>
+<ol class="arabic" start="2">
+<li><p class="first">Download the protomol-addon package from here. Extract the source code to a directory, <tt class="docutils literal"><span class="pre">protomol_addon</span></tt> for instance.</p>
+</li>
+<li><p class="first">Change the directory to <tt class="docutils literal"><span class="pre">protomol_addon</span></tt>. Patch the original ProtoMol source code with the addon package by running</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>make install ../protomol_orig
+</pre></div>
+</div>
+<p>After the installation, an executable named <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> will be created in the system directory. To see whether the add-on package has been successfully installed, run <tt class="code docutils literal"><span class="pre">ProtoMol</span> <span class="pre">--modules</span></tt>, and the output should list <tt class="docutils literal"><span class="pre">addon</span></tt> as an installed module.</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>Checkpoint                              Provides checkpointing support
+Addon                                   Addons for simulating AMO systems
+BondedForces
+CommandLine                             Adds standard command line options.
+Configuration                           Configuration system.
+HessianIntegrator
+IO
+IntegratorBase
+IntegratorOpenMM
+Leapfrog
+Main                                    System default keywords and setup.
+Modifier
+NonbondedCutoffForce
+NonbondedFullElectrostaticForce
+NonbondedFullForce
+NonbondedIntermittentFullForce
+NonbondedSimpleFullForce
+Output
+Topology
+NormalMode
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to protomol_addon&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Basic Usage.html"
+                        title="next chapter">Basic Usage</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Installation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Basic Usage.html" title="Basic Usage"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to protomol_addon’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">protomol_addon 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Kuang Chen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

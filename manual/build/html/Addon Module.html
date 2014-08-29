@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Addon Module &mdash; protomol_addon 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="protomol_addon 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Basic Usage of ProtoMol" href="Basic Usage.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Basic Usage.html" title="Basic Usage of ProtoMol"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">protomol_addon 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="addon-module">
+<h1>Addon Module<a class="headerlink" href="#addon-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="an-overview-of-addon-module">
+<h2>An overview of addon module<a class="headerlink" href="#an-overview-of-addon-module" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">addon</span></tt> module provides support for simulation of AMO systems, which include</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">ion_trap</span></tt> : support for ion trap simulation, also including harmonics trap</li>
+<li><tt class="docutils literal"><span class="pre">buffergas</span></tt>: support for sympathetic cooling by ultracode buffer gas</li>
+<li><tt class="docutils literal"><span class="pre">damping</span></tt>  : support for damping mechanism (laser-cooling or fictious damping)</li>
+<li><tt class="docutils literal"><span class="pre">reaction</span></tt> : support for chemical reactions (replacement ... )</li>
+</ul>
+</div>
+<div class="section" id="lqtforce">
+<h2>LQTForce<a class="headerlink" href="#lqtforce" title="Permalink to this headline">¶</a></h2>
+<p>The trapping force from the linear quadrupole trap and harmonic traps are provided with the keywords <tt class="docutils literal"><span class="pre">LQTForce</span></tt> and <tt class="docutils literal"><span class="pre">HarmonicTrapForce</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">LQTForce</span></tt> takes <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> as a required string argument after the <tt class="docutils literal"><span class="pre">-lqt-spec</span></tt> directive:</p>
+<blockquote>
+<div><div class="code highlight-python"><div class="highlight"><pre>LQTForce
+-lqt-spec your_spec.xml
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="docutils">
+<dt>where <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is a xml file which should contain the following fields:</dt>
+<dd><div class="code xml first last highlight-python"><div class="highlight"><pre>&lt;ConfigRoot&gt;
+       &lt;LQTSpec&gt;
+           &lt;r0&gt; 12e-3 &lt;/r0&gt;
+           &lt;z0&gt; 21.5e-3 &lt;/z0&gt;
+           &lt;v_rf&gt; 43.75 &lt;/v_rf&gt;
+           &lt;v_ec&gt; 1 &lt;/v_ec&gt;
+           &lt;kappa&gt; 0.1275 &lt;/kappa&gt;
+           &lt;omega&gt; 300e3 &lt;/omega&gt;
+       &lt;/LQTSpec&gt;
+&lt;/ConfigRoot&gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>The meaning of these fields are given below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="62%" />
+<col width="19%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Field</td>
+<td>Meaning</td>
+<td>Unit</td>
+</tr>
+<tr class="row-even"><td>r_0</td>
+<td>Field Radius</td>
+<td>m</td>
+</tr>
+<tr class="row-odd"><td>z_0</td>
+<td>Distance from center to endcap</td>
+<td>m</td>
+</tr>
+<tr class="row-even"><td>v_rf</td>
+<td>Rf-voltage</td>
+<td>V</td>
+</tr>
+<tr class="row-odd"><td>v_ec</td>
+<td>End-cap voltage</td>
+<td>V</td>
+</tr>
+<tr class="row-even"><td>omega</td>
+<td>trap frequency</td>
+<td>Hz</td>
+</tr>
+<tr class="row-odd"><td>kappa</td>
+<td>geometrical factor</td>
+<td>NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="harmonictrapforce">
+<h2>HarmonicTrapForce<a class="headerlink" href="#harmonictrapforce" title="Permalink to this headline">¶</a></h2>
+<p>HarmonicTrapForce simulates the force due to a haromical potential:</p>
+<blockquote>
+<div>n_{mathrm{offset}} = sum_{k=0}^{N-1} s_k n_k</div></blockquote>
+<p>The <tt class="docutils literal"><span class="pre">HarmonicTrapForce</span></tt> takes <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> as a required string argument after the <tt class="docutils literal"><span class="pre">-ht-spec</span></tt> directive:</p>
+<blockquote>
+<div><div class="code highlight-python"><div class="highlight"><pre>HarmonicTrapForce
+-ht-spec your_spec.xml
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="docutils">
+<dt>where <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is a xml file which should contain the following fields:</dt>
+<dd><div class="code xml first last highlight-python"><div class="highlight"><pre>&lt;ConfigRoot&gt;
+       &lt;HTSpec&gt;
+           &lt;omega_x&gt; 40e3 &lt;/omega_x&gt;
+           &lt;omega_y&gt; 40e3 &lt;/omega_y&gt;
+           &lt;omega_x&gt; 40e3 &lt;/omega_z&gt;
+       &lt;/HTSpec&gt;
+&lt;/ConfigRoot&gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>The meaning of these fields are given below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="60%" />
+<col width="20%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Field</td>
+<td>Meaning</td>
+<td>Unit</td>
+</tr>
+<tr class="row-even"><td>omega_x</td>
+<td>angular trapping frequency in x direction</td>
+<td>Hz</td>
+</tr>
+<tr class="row-odd"><td>omega_y</td>
+<td>angular trapping frequency in y direction</td>
+<td>Hz</td>
+</tr>
+<tr class="row-even"><td>omega_z</td>
+<td>angular trapping frequency in z direction</td>
+<td>Hz</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Addon Module</a><ul>
+<li><a class="reference internal" href="#an-overview-of-addon-module">An overview of addon module</a></li>
+<li><a class="reference internal" href="#lqtforce">LQTForce</a></li>
+<li><a class="reference internal" href="#harmonictrapforce">HarmonicTrapForce</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Basic Usage.html"
+                        title="previous chapter">Basic Usage of ProtoMol</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Addon Module.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Basic Usage.html" title="Basic Usage of ProtoMol"
+             >previous</a> |</li>
+        <li><a href="index.html">protomol_addon 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Kuang Chen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,334 @@
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+
+\begin{document}
+
+\section{Introduction}
+\textsc{ProtoMol} is an ``object-oriented, component based, framework for molecular dynamics (MD) simulations''. Written in \textsc{C++}, \textsc{ProtoMol} can simulate classical mechanical systems with very high accuracy and efficiency. For a detailed review of \textsc{ProtoMol}, see Ref \cite{Matthey2004}. In the remainder of this manual, we first explain the \textsc{ProtoMol} installation process, then we detail the usage of \textsc{ProtoMol} and its add-ons. At last, we describe the processing of writing customized add-ons for future simulation studies.
+
+\section{Obtaining \textsc{ProtoMol}}
+\textsc{ProtoMol} is an open-source and cross-platform software hosted at \textsc{SourceForge}. Considerable modifications have been added for simulations in this dissertation, so it is highly recommended to have the modified version to start with, which can be found at \textsc{github} \url{https://github.com/kuangchen/ProtoMol}. Any \textsc{git} tool should be able to clone this online repository into local copies. 
+
+\section{Compiling \textsc{ProtoMol}}
+To compile modified \textsc{ProtoMol}, a \textsc{C++} compiler compatible with \textsc{C++11} standard is needed. Modified \textsc{ProtoMol} also depends on two external library, \textsc{Lua} v5.2 and \textsc{HDF5} v1.8.10, which can be found in the package repository (for Linux system) or downloaded online (for Windows system) at the following URL,
+\begin{itemize}
+\item \textsc{Lua} \url{http://code.google.com/p/luaforwindows/}
+\item \textsc{HDF5} \url{http://www.hdfgroup.org/HDF5/release/obtain5.html}
+\end{itemize}
+
+The compilation and installation process is automated by \textsc{CMake} tool. On Linux system, installation is accomplished by the following commands, 
+
+\begin{lstlisting}[language=bash]
+# Remove previous CMakeCache and CMakeFiles folder
+rm -rf CMakeCache.txt CMakeFiles
+
+# Turn on build_lapack switch and set the build_lapack_type to lapack
+cmake -DBUILD_LAPACK=ON -DBUILD_LAPACK_TYPE=lapack 
+
+# Tell cmake to generate Makefiles
+cmake .
+
+# Install ProtoMol into system folder
+sudo make install
+\end{lstlisting}
+The basic usage of \textsc{CMake} is documented at \url{http://www.cmake.org/cmake/help/documentation.html}. To toggle other build switches (cluster computing, $\cdots$), see \textsc{CMakeLists.txt} for detail.
+
+\section{Basic Usage}
+To start a simulation a user needs to provide a configuration file (in plain text) that defines simulation initial conditions, integrator, outputs, and other properties of simulation. These entries are organized in the format of self-explanatory ``keyword - value'' pairs. The definition of integrators and forces have their own special syntax. A sample configuration file is presented below, with the meaning of each entry explained in the comment line. To see a full list of keywords, please see Ref \cite{Matthey2004, ProtoMolQuickRef}.
+\begin{lstlisting}
+# Number of steps in simulation
+numsteps 100000000
+
+# The number assigned to the first step
+firststep 0
+
+# Random Number seed
+seed 11
+
+# Initial temperature of particles
+temperature 1e4
+
+# Simulation cell size
+cellsize 5000000
+
+# Boundary Conditions
+boundaryConditions vacuum
+
+# Cell Manager
+cellManager Cubic
+exclude none
+
+# Initial position and velocitiy definition
+posfile ion_neutral_cooling_ini_pos_32.xyz
+psffile ion_neutral_cooling_32.psf
+
+# Par file definition
+parfile ion_neutral_cooling.par
+
+# Output Setting
+outputfreq 10000
+
+# Add IonSnapshot as the output
+IonSnapshot ss.lua
+
+# Integrator Setting
+integrator {
+  # 0th level integrator
+  level 0 LeapfrogBufferGas {
+    timestep 1e8
+    filename buffer_gas.lua	
+        
+    # Add Coulomb force between ions
+    force Coulomb 
+    -algorithm NonbondedSimpleFull
+        
+    # Add ion trap force
+    force LQT 
+    -lqt_filename trap.lua
+  }
+}
+\end{lstlisting}
+
+\section{Using ProtoMol Add-Ons}
+A set of new forces, integrators and outputs have been added specifically to simulate ion trap dynamics, whose usage are detailed below.
+
+\subsection{New Forces}
+\paragraph{Rf-trapping force} \mbox{} \\
+Rf-trapping force is defined with the following syntax,
+\begin{lstlisting}
+force LQT 
+    -lqt_filename your_file
+\end{lstlisting}
+where {\ttfamily{LQT}} is the name of the force, and the argument of {\ttfamily{-lqt\_filename}}, i.e. {\ttfamily{-your\_file}} is a \textsc{Lua} file that defines an ion trap. 
+
+The trap definition declares a variable named {\ttfamily{trap}}, a \textsc{Lua} table that contains the mass of the ion in the trap, the physical dimensions of the trap and the trap voltage. A sample trap definition file is given below, where the meanings of each filed are the same as in Eq. \ref{eq:V} and their units are given in the comment.
+\begin{lstlisting}
+trap = { 
+  m = 173,        -- AMU
+  r0 = 12e-3,     -- m
+  z0 = 21.5e-3,   -- m
+  v_rf = 175/2,   -- V (Note arithmetic operations can be done in Lua file)
+  v_ec = 10,      -- V
+  eta = 0.1275,   -- 1
+  omega = 300e3   -- Hz
+}
+\end{lstlisting}
+
+
+\paragraph{Harmonic static trapping force}\mbox{} \\
+The harmonic static trap is introduced to simulate ion dynamics under the secular approximation, in which ions are confined by a harmonic potential with the trapping frequency equal to ion's secular frequency. Harmonic trapping force is defined with the following syntax,
+\begin{lstlisting}
+force HarmonicTrapForce
+    -ht_def your_file
+\end{lstlisting}
+where {\ttfamily{HarmonicTrapForce}} is the name of the force, and the argment of {\ttfamily{-ht\_filename}}, i.e. {\ttfamily{-your\_file}} is a \textsc{Lua} file that defines an harmonic trapping force. 
+
+The trap definition declares a variable {\ttfamily{trap}}, a Lua table that contains a single field {\ttfamily{freq}}, which in turn contains three fields {\ttfamily{x, y, z}}. A sample trap definition file is given below, 
+\begin{lstlisting}
+trap = { 
+  freq = { x = 39.63e3 * 2 * 3.14159,
+           y = 39.63e3 * 2 * 3.14159,
+           z = 39.63e3 * 2 * 3.14159 
+         } 
+}
+\end{lstlisting}
+The meanings and units of these fields are given in the following Tab. \ref{tab:harmonic_trap_def}.
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{ c  c  l } \toprule
+    Field & Unit & Meaning\\ \midrule
+    {\ttfamily{trap.freq.\{x,y,z\}}} & Hz & $\omega_{x,y,z}$ as defined in $V=\frac{1}{2}(\omega_x^2x^2+\omega_y^2y^2+\omega_z^2z^2)$\\\bottomrule
+  \end{tabular}
+  \caption{Harmonic trap definition syntax.}
+  \label{tab:harmonic_trap_def}
+\end{table}
+
+\paragraph{Damping force}\mbox{}\\
+The damping force, \textit{i.e.} $\vec{F} = -b \vec{v}$, is introduced to emulate the laser-cooling force, which quickly removes ions' kinetic energy, and cause the ions to form Coulomb crystal. Damping force is defined with the following syntax,
+\begin{lstlisting}
+force DampingForce
+    -damping_def your_file
+\end{lstlisting}
+where {\ttfamily{DampingForce}} is the name of the force, and the argment of {\ttfamily{-damping\_def}}, i.e. {\ttfamily{-your\_file}} is a \textsc{Lua} file that defines a damping force. 
+
+The trap definition declares a variable {\ttfamily{damping}} that contains the damping magnitude, and when the damping is on. A sample damping definition file is given below,
+\begin{lstlisting}
+damping = { 
+  coeff = 3e-22,
+  t_start = -1,
+  t_end = 0.01 
+}
+\end{lstlisting}
+The meanings and units of the fields in the {\ttfamily{damping}} table are given in Tab. \ref{tab:damping_def}.
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{ c  c  l } \toprule
+    Field & Unit & Meaning\\ \midrule
+    {\ttfamily{coeff}} & ? & damping coefficient $b$, defined by $\mathbf{F}=-b\mathbf{v}$\\
+    {\ttfamily{t\_start}} & $s$ & start time. Laser is on only when {\ttfamily{t\_start}} $\le$ t $\le$ {\ttfamily{t\_{end}}}. \\
+    {\ttfamily{t\_end}} & $s$ & end time  \\ \bottomrule
+  \end{tabular}
+  \caption{Damping force definition file}
+  \label{tab:damping_def}
+\end{table}
+
+\subsection{New Integrators}
+\paragraph{Buffer-gas Leapfrog  Integrator V2}\mbox{} \\
+A leapfrog integrator is introduced to simulate random collisions with ultracold neutral atoms. It is defined with the following syntax,
+\begin{lstlisting}
+level X LeapFrogBufferGas2 {
+  timestep 1e8
+  filename your_file
+}
+\end{lstlisting}
+where {\ttfamily{LeapFrogBufferGas2}} is the name of the integrator, and the argument of {\ttfamily{filename}}, i.e.{\ttfamily{your\_file}} is a \textsc{Lua} file that defines the buffer gas integrator, by declaring a table variable {\ttfamily{neutral}}. A sample buffer-gas leapfrog integrator definition file is given below
+\begin{lstlisting}
+neutral = { 
+  mass = 40,
+  polarizability = 50,
+  temperature = 5e-3,
+  density = 1e16 
+}
+\end{lstlisting}
+The meanings and units of the fields in the {\ttfamily{neutral}} table are given in Tab. \ref{tab:leapfrogintegrator_def}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{ c  c  l } \toprule
+    Field & Unit & Meaning\\ \midrule
+    {\ttfamily{mass}} & AMU & Mass of neutral atom \\
+    {\ttfamily{polarizability}} & $10^{24} \mathrm{cm}^3$ & Polarizability of neutral atom \\
+    {\ttfamily{temperature}} & K & Temperature of neutral atom \\
+    {\ttfamily{density}} & $\mathrm{m}^3$ & Density of neutral atom \\\bottomrule
+  \end{tabular}
+  \caption{Buffer-gas leapfrog integrator definition file}
+  \label{tab:leapfrogintegrator_def}
+\end{table}
+
+\subsection{New output}
+\paragraph{Ion Snapshot}\mbox{}\\
+At each simulation time step, ions' positions and velocities form a \textit{frame}. A consecutive series of \textit{frames} form a \textit{snapshot}. For analysis at a later time, an end user might want to record an array of snapshots starting at different time $t_i$ $(i=1,2,3,\cdots)$ during the simulation, and for simplify, let's suppose every snapshot contains the same number of frames. It is defined with the following syntax,
+\begin{lstlisting}
+  IonSnapshot your_file\end{lstlisting}
+where {\ttfamily{your\_file}} is a \textsc{Lua} file that defines the ion snapshots.
+
+The {\ttfamily{IonSnapshot}} definition declares a table variable {\ttfamily{ss}} that contains the number of snapshots, and frames in each snapshot. A sample {\ttfamily{IonSnapshot}} definition is given below, 
+\begin{lstlisting}{Ion Snapshot syntax}
+start_time = {}
+
+for i=1, 50 do
+   start_time[i] = (i-1) * 2e-2
+end
+
+ss = {
+  num_frame = 250, 
+  start = start_time 
+  dir = ./
+}
+\end{lstlisting}
+The meanings and units of the fields in the {\ttfamily{ss}} table are given in Tab. \ref{tab:ion_snapshot_def}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{l  l  l  p{7cm} } \toprule
+    Field & Type &  Unit & Meaning\\ \midrule
+    {\ttfamily{num\_frame}} & integer & 1 & $N_f$, if set to -1, then $N_f$ is set to number of steps in the longest secular periods in $x,y,z$ three directions \\ 
+    {\ttfamily{start}} & table & sec & $t_i$, i.e. the start time of each snapshot \\
+    {\ttfamily{dir}} & string & N/A & The name of directory where snapshot files are stored\\
+    \bottomrule
+  \end{tabular}
+  \caption{Snapshot Definition}
+  \label{tab:ion_snapshot_def}
+\end{table}
+
+All the snapshot files are stored under the same directory, specified by the {\ttfamily{dir}} keywords in the definition file. They are named by the pattern snapshot\_{\ttfamily{i}}.hd5, where $i$ ranges from $0$ to $N_s-1$.
+% \tikzstyle{every node}=[draw=black,thick,anchor=west]
+% \tikzstyle{selected}=[draw=red,fill=red!30]
+% \tikzstyle{optional}=[dashed,fill=gray!50]
+% \begin{figure}[h!]
+%   \centering
+%   \begin{tikzpicture}[%
+%     grow via three points={one child at (0.5,-0.7) and
+%       two children at (0.5,-0.7) and (0.5,-1.4)},
+%     edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+%     \node {dir}
+%     child { node {snapshot\_$0$.hd5} }
+%     child { node {snapshot\_$1$.hd5} }
+%     child { node {...} }
+%     child { node {snapshot\_$(N_s-1)$.hd5} };
+%   \end{tikzpicture}
+%   \caption{Directory structure of snapshot output.}
+%   \label{tkp:dir_structure}
+% \end{figure}
+
+The snapshot files are stored in HDF5 format, for its compact size and support by major programming languages, including C/C++/Python/Matlab. For an overview of HDF5 file, visit its official website at \url{http://www.hdfgroup.org/HDF5/}. Shown in Fig. \ref{tkp:ion_snapshot_file_struct}, every HDF5 file has a hierachical data structure, similar to the file system in an operating system. In addition to $N_f$ consecutive frames, a {\ttfamily{config}} header is also included which consists of auxillary information intended to make the snapshot file self-inclusive. The meanings of various fields in {\ttfamily{config}} is explained in Fig. \ref{tab:ion_snapshot_def2}.
+% \tikzstyle{every node}=[draw=black,thick,anchor=west]
+% \tikzstyle{selected}=[draw=red,fill=red!30]
+% \tikzstyle{optional}=[dashed,fill=gray!50]
+% \begin{figure}[h!]
+%   \centering
+%   \begin{tikzpicture}[%
+%     grow via three points={one child at (0.5,-0.7) and
+%       two children at (0.5,-0.7) and (0.5,-1.4)},
+%     edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+%     \node {/}
+%     child { node {config} 
+%       child { node {start} }
+%       child { node {fps} }
+%       child { node {numFrame} }
+%       child { node {numAtom} }
+%       child { node {numFrameperMM} }
+%     }
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}	
+%     child { node {frame0} 
+%       child {node {$x_1, y_1, z_1, v_{x,1}, v_{y,1}, v_{z,1}$} } 
+%       child {node {$x_2, y_2, z_2, v_{x,2}, v_{y,2}, v_{z,2}$} } 
+%       child {node {...} } 
+%       child {node {$x_n, y_n, z_n, v_{x,n}, v_{y,n}, v_{z,n}$} }
+%     }
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}			
+%     child { node {frame1} 
+%       child {node {$x_1, y_1, z_1, v_{x,1}, v_{y,1}, v_{z,1}$} } 
+%       child {node {$x_2, y_2, z_2, v_{x,2}, v_{y,2}, v_{z,2}$} } 
+%       child {node {...} } 
+%       child {node {$x_n, y_n, z_n, v_{x,n}, v_{y,n}, v_{z,n}$} }
+%     }
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}				
+%     child [missing] {}			
+%     child { node {frame2} }
+%     child { node {...} }
+%     child { node {frameN} };
+%   \end{tikzpicture}
+%   \caption{File structure of each snapshot file}
+%   \label{tkp:ion_snapshot_file_struct}
+% \end{figure}
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{l  l  l  p{7cm} } \toprule
+    Field & Type &  Unit & Meaning\\ \midrule
+    {\ttfamily{start}} & float & s & Start time of the snapshot\\
+    {\ttfamily{fps}} & integer & 1 & Number of frames per second \\
+    {\ttfamily{numFrames}} & integer & 1 & Number of frames in the snapshot\\
+    {\ttfamily{numAtoms}} & integer & 1 & Number of atoms in the simulation\\
+    {\ttfamily{numFrameperMM}} & integer & 1 & Number of frames in one micromotion period\\
+    \bottomrule
+  \end{tabular}
+  \caption{Snapshot config header}
+  \label{tab:ion_snapshot_def2}
+\end{table}
+
+\section{Writing \textsc{ProtoMol} Add-Ons}
+\textsc{ProtoMol} makes use of object-oriented programming language, and it has been carefully designed to ensure extensibility for new model encapsulation. How to add new modules to \textsc{ProtoMol} is beyond the scope of this thesis. For interested readers, it is recommended to read Ref. \cite{ProtoMolHowTo}, combined with the newest \textsc{ProtoMol} source code to 
+
+\bibliography{ref.bib}
+\end{document}

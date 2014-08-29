@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic Usage of ProtoMol &mdash; protomol_addon 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="protomol_addon 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Installation" href="Installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">protomol_addon 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="basic-usage-of-protomol">
+<h1>Basic Usage of ProtoMol<a class="headerlink" href="#basic-usage-of-protomol" title="Permalink to this headline">¶</a></h1>
+<p>To run a ProtoMol simulation, a user needs to provide a configuration file that defines simulation initial conditions, integrator, outputs, and other simulation parameters.</p>
+<blockquote>
+<div><div class="code bash highlight-python"><div class="highlight"><pre>ProtoMol your_file.conf
+</pre></div>
+</div>
+</div></blockquote>
+<div class="section" id="overview-of-configuration-file">
+<h2>Overview of configuration file<a class="headerlink" href="#overview-of-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>These entries are organized in the format of self-explanatory <em>keyword - value</em> pairs. A minimal example of configuration file is presented below, with the meaning of each entry explained in the comment line.</p>
+<blockquote>
+<div><div class="code bash highlight-python"><div class="highlight"><pre># Number of steps in simulation
+numsteps 100000000
+
+# The number assigned to the first step
+firststep 0
+
+# Random Number seed
+seed 11
+
+# Initial temperature of particles
+temperature 1e4
+
+# Simulation cell size
+cellsize 5000000
+
+# Boundary Conditions
+boundaryConditions vacuum
+
+# Cell Manager
+cellManager Cubic
+exclude none
+
+# Initial position and velocitiy definition
+posfile ion_neutral_cooling_ini_pos_32.xyz
+psffile ion_neutral_cooling_32.psf
+
+# Par file definition
+parfile ion_neutral_cooling.par
+
+# Output Setting
+outputfreq 10000
+
+# Add IonSnapshot as the output
+IonSnapshot ss.lua
+
+# Integrator Setting
+integrator {
+       # 0th level integrator
+       level 0 LeapfrogBufferGas {
+       timestep 1e8
+       filename buffer_gas.lua
+
+       # Add Coulomb force between ions
+       force Coulomb
+       -algorithm NonbondedSimpleFull
+
+       # Add ion trap force
+       force LQT
+       -lqt_filename trap.lua
+       }
+}
+</pre></div>
+</div>
+</div></blockquote>
+<p>To see the full list of supported keywords, refer to <a class="reference external" href="http://protomol.sourceforge.net/quickref.pdf">ProtoMol Quick Reference</a>.</p>
+<p>The most important components are:</p>
+<ul class="simple">
+<li>Definition of position and velocities for each particle in <tt class="docutils literal"><span class="pre">xyz</span></tt> format</li>
+<li>Definition of particle parameters (mass, charge, <em>etc</em>), in <tt class="docutils literal"><span class="pre">psf</span></tt> and <tt class="docutils literal"><span class="pre">par</span></tt> format</li>
+<li>Definition of addon components in <tt class="docutils literal"><span class="pre">xml</span></tt> format.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Basic Usage of ProtoMol</a><ul>
+<li><a class="reference internal" href="#overview-of-configuration-file">Overview of configuration file</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Basic Usage.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">protomol_addon 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Kuang Chen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
