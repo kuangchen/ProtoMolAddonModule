@@ -23,8 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="protomol_addon 1.0 documentation" href="index.html" />
-    <link rel="next" title="Basic Usage" href="Basic Usage.html" />
+    <link rel="next" title="Basic Usage of ProtoMol" href="Basic Usage.html" />
     <link rel="prev" title="Welcome to protomol_addon’s documentation!" href="index.html" /> 
   </head>
   <body>
@@ -35,7 +36,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="Basic Usage.html" title="Basic Usage"
+          <a href="Basic Usage.html" title="Basic Usage of ProtoMol"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to protomol_addon’s documentation!"
@@ -52,18 +53,31 @@
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>Installation consists of the following steps.</p>
-<ol class="arabic simple">
-<li>Download the original ProtoMol source code for your operating system from <a class="reference external" href="http://sourceforge.net/projects/protomol/files/ProtoMol/Protomol%203.3/">sourceforge</a> page. Extract the source code to a directory, <tt class="docutils literal"><span class="pre">protomol_orig</span></tt> for instance.</li>
-</ol>
-<ol class="arabic" start="2">
-<li><p class="first">Download the protomol-addon package from here. Extract the source code to a directory, <tt class="docutils literal"><span class="pre">protomol_addon</span></tt> for instance.</p>
-</li>
-<li><p class="first">Change the directory to <tt class="docutils literal"><span class="pre">protomol_addon</span></tt>. Patch the original ProtoMol source code with the addon package by running</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>make install ../protomol_orig
+<ol class="arabic">
+<li><p class="first">Install all the dependencies: <tt class="docutils literal"><span class="pre">git</span></tt>, <tt class="docutils literal"><span class="pre">boost</span></tt>, <tt class="docutils literal"><span class="pre">HD5</span></tt>.</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>sudo apt-get install git libboost1.55-all-dev libhdf5-dev
 </pre></div>
 </div>
-<p>After the installation, an executable named <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> will be created in the system directory. To see whether the add-on package has been successfully installed, run <tt class="code docutils literal"><span class="pre">ProtoMol</span> <span class="pre">--modules</span></tt>, and the output should list <tt class="docutils literal"><span class="pre">addon</span></tt> as an installed module.</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>Checkpoint                              Provides checkpointing support
+</li>
+<li><p class="first">Clone the <tt class="docutils literal"><span class="pre">ProtoMolAddon</span></tt> git repository to a local path:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>git clone https://github.com/kuangchen/ProtoMolAddon.git
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install the dependent packages (HDF5, Boost)</p>
+</li>
+<li><p class="first">Compile the source code into binary:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>cmake .
+make
+sudo make install
+</pre></div>
+</div>
+</li>
+<li><p class="first">After the installation, an executable named <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> will be created in the system directory. To see whether the add-on package has been successfully installed, run <tt class="code docutils literal"><span class="pre">ProtoMol</span> <span class="pre">--modules</span></tt>, and the output should list <tt class="docutils literal"><span class="pre">addon</span></tt> as an installed module.</p>
+</li>
+</ol>
+<blockquote>
+<div><div class="code bash highlight-python"><div class="highlight"><pre>Checkpoint                              Provides checkpointing support
 Addon                                   Addons for simulating AMO systems
 BondedForces
 CommandLine                             Adds standard command line options.
@@ -85,8 +99,7 @@ Topology
 NormalMode
 </pre></div>
 </div>
-</li>
-</ol>
+</div></blockquote>
 </div>
 
 
@@ -100,7 +113,7 @@ NormalMode
                         title="previous chapter">Welcome to protomol_addon&#8217;s documentation!</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="Basic Usage.html"
-                        title="next chapter">Basic Usage</a></p>
+                        title="next chapter">Basic Usage of ProtoMol</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/Installation.txt"
@@ -130,7 +143,7 @@ NormalMode
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="Basic Usage.html" title="Basic Usage"
+          <a href="Basic Usage.html" title="Basic Usage of ProtoMol"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to protomol_addon’s documentation!"

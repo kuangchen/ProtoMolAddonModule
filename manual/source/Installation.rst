@@ -3,19 +3,29 @@ Installation
 
 Installation consists of the following steps. 
 
-1. Download the original ProtoMol source code for your operating system from sourceforge_ page. Extract the source code to a directory, ``protomol_orig`` for instance.
+1. Install all the dependencies: ``git``, ``boost``, ``HD5``.
+   
+   .. code:: bash
+ 
+      sudo apt-get install git libboost1.55-all-dev libhdf5-dev
 
-.. _sourceforge: http://sourceforge.net/projects/protomol/files/ProtoMol/Protomol%203.3/
+2. Clone the ``ProtoMolAddon`` git repository to a local path:
 
-2. Download the protomol-addon package from here. Extract the source code to a directory, ``protomol_addon`` for instance. 
+   .. code:: bash
+  
+      git clone https://github.com/kuangchen/ProtoMolAddon.git
 
-3. Change the directory to ``protomol_addon``. Patch the original ProtoMol source code with the addon package by running
+3. Install the dependent packages (HDF5, Boost)   
+
+4. Compile the source code into binary:
 
    .. code:: bash
 
-      make install ../protomol_orig
+      cmake .
+      make 
+      sudo make install
 
-   After the installation, an executable named ``ProtoMol`` will be created in the system directory. To see whether the add-on package has been successfully installed, run :code:`ProtoMol --modules`, and the output should list ``addon`` as an installed module.
+5.  After the installation, an executable named ``ProtoMol`` will be created in the system directory. To see whether the add-on package has been successfully installed, run :code:`ProtoMol --modules`, and the output should list ``addon`` as an installed module.
 
    .. code:: bash
    

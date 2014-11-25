@@ -14,6 +14,7 @@ Contents:
    Installation
    Basic Usage
    Addon Module
+   Write Your Own Component
 
 Indices and tables
 ==================
