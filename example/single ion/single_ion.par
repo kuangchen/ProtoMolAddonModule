@@ -1,0 +1,8 @@
+ REMARKS Charmm parameter set for water and ions v22 b4
+ REMARKS FILENAME="water+ions.par"
+
+ SET ECHO=FALSE END
+
+ NONBONDED  Ba138      .0       .0       .0       .0    !
+ SET ECHO=TRUE END
+

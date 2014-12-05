@@ -1,0 +1,11 @@
+<ConfigRoot>
+  <LQTSpec>
+    <r0> 6.85e-3 </r0>
+    <z0> 10e-3 </z0>
+    <v_rf> 110 </v_rf>
+    <v_dc> 4.3 </v_dc>
+    <v_ec> 11 </v_ec>
+    <kappa> 0.022 </kappa>
+    <omega> 720e3 </omega>
+  </LQTSpec>
+</ConfigRoot>

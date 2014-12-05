@@ -1,0 +1,19 @@
+PSF 
+
+      1 !NTITLE
+ REMARKS FILENAME="wat10.psf"                                                                                                       
+ REMARKS  VELOCTIY PDB FILE CONVERTED FROM BINARY FORMAT BY BinToPdb                                                                
+ REMARKS DATE: 8-Jul-96  15:23:55       created by user: dorina                                                                     
+
+    1 !NATOM 
+0  BOX1    1 IONE Ba138 Ba138    1.000000       138           0
+
+
+
+0 !NBOND: bonds     
+		      
+0 !NTHETA: angles   
+		      
+0 !NPHI: dihedrals  
+		      
+0 !NIMPHI: impropers

@@ -1,0 +1,126 @@
+<ConfigRoot>
+  <BufferGas>
+    <m> 40 </m>
+    <name> Ca </name>
+    <alpha> 159.4 </alpha>
+    <T> 5e-3 </T>
+    <rho> 2e15 </rho>
+    <target_atom_name> Ba138 </target_atom_name>
+  </BufferGas>
+
+  <LQTSpec>
+    <r0> 6.85e-3 </r0>
+    <z0> 10e-3 </z0>
+    <v_rf> 110 </v_rf>
+    <v_dc> 4.3 </v_dc>
+    <v_ec> 11 </v_ec>
+    <kappa> 0.022 </kappa>
+    <omega> 720e3 </omega>
+  </LQTSpec>
+
+  <OutputSnapshotWithHDF5Storage>
+    <FileNamePattern>snapshot_%d.h5</FileNamePattern>
+    <TimeQueue>
+      <Entry> 1000  0.0 1e-8 </Entry>
+      <Entry> 1000  0.1 1e-8 </Entry> 
+      <Entry> 1000  0.2 1e-8 </Entry> 
+      <Entry> 1000  0.3 1e-8 </Entry> 
+      <Entry> 1000  0.4 1e-8 </Entry> 
+      <Entry> 1000  0.5 1e-8 </Entry> 
+      <Entry> 1000  0.6 1e-8 </Entry> 
+      <Entry> 1000  0.7 1e-8 </Entry> 
+      <Entry> 1000  0.8 1e-8 </Entry> 
+      <Entry> 1000  0.9 1e-8 </Entry> 
+      <Entry> 1000 1.0 1e-8 </Entry> 
+      <Entry> 1000 1.1 1e-8 </Entry> 
+      <Entry> 1000 1.2 1e-8 </Entry> 
+      <Entry> 1000 1.3 1e-8 </Entry> 
+      <Entry> 1000 1.4 1e-8 </Entry> 
+      <Entry> 1000 1.5 1e-8 </Entry> 
+      <Entry> 1000 1.6 1e-8 </Entry> 
+      <Entry> 1000 1.7 1e-8 </Entry> 
+      <Entry> 1000 1.8 1e-8 </Entry> 
+      <Entry> 1000 1.9 1e-8 </Entry> 
+      <Entry> 1000 2.0 1e-8 </Entry> 
+      <Entry> 1000 2.1 1e-8 </Entry> 
+      <Entry> 1000 2.2 1e-8 </Entry> 
+      <Entry> 1000 2.3 1e-8 </Entry> 
+      <Entry> 1000 2.4 1e-8 </Entry> 
+      <Entry> 1000 2.5 1e-8 </Entry> 
+      <Entry> 1000 2.6 1e-8 </Entry> 
+      <Entry> 1000 2.7 1e-8 </Entry> 
+      <Entry> 1000 2.8 1e-8 </Entry> 
+      <Entry> 1000 2.9 1e-8 </Entry> 
+      <Entry> 1000 3.0 1e-8 </Entry> 
+      <Entry> 1000 3.1 1e-8 </Entry> 
+      <Entry> 1000 3.2 1e-8 </Entry> 
+      <Entry> 1000 3.3 1e-8 </Entry> 
+      <Entry> 1000 3.4 1e-8 </Entry> 
+      <Entry> 1000 3.5 1e-8 </Entry> 
+      <Entry> 1000 3.6 1e-8 </Entry> 
+      <Entry> 1000 3.7 1e-8 </Entry> 
+      <Entry> 1000 3.8 1e-8 </Entry> 
+      <Entry> 1000 3.9 1e-8 </Entry> 
+      <Entry> 1000 4.0 1e-8 </Entry> 
+      <Entry> 1000 4.1 1e-8 </Entry> 
+      <Entry> 1000 4.2 1e-8 </Entry> 
+      <Entry> 1000 4.3 1e-8 </Entry> 
+      <Entry> 1000 4.4 1e-8 </Entry> 
+      <Entry> 1000 4.5 1e-8 </Entry> 
+      <Entry> 1000 4.6 1e-8 </Entry> 
+      <Entry> 1000 4.7 1e-8 </Entry> 
+      <Entry> 1000 4.8 1e-8 </Entry> 
+      <Entry> 1000 4.9 1e-8 </Entry> 
+      <Entry> 1000 5.0 1e-8 </Entry> 
+      <Entry> 1000 5.1 1e-8 </Entry> 
+      <Entry> 1000 5.2 1e-8 </Entry> 
+      <Entry> 1000 5.3 1e-8 </Entry> 
+      <Entry> 1000 5.4 1e-8 </Entry> 
+      <Entry> 1000 5.5 1e-8 </Entry> 
+      <Entry> 1000 5.6 1e-8 </Entry> 
+      <Entry> 1000 5.7 1e-8 </Entry> 
+      <Entry> 1000 5.8 1e-8 </Entry> 
+      <Entry> 1000 5.9 1e-8 </Entry> 
+      <Entry> 1000 6.0 1e-8 </Entry> 
+      <Entry> 1000 6.1 1e-8 </Entry> 
+      <Entry> 1000 6.2 1e-8 </Entry> 
+      <Entry> 1000 6.3 1e-8 </Entry> 
+      <Entry> 1000 6.4 1e-8 </Entry> 
+      <Entry> 1000 6.5 1e-8 </Entry> 
+      <Entry> 1000 6.6 1e-8 </Entry> 
+      <Entry> 1000 6.7 1e-8 </Entry> 
+      <Entry> 1000 6.8 1e-8 </Entry> 
+      <Entry> 1000 6.9 1e-8 </Entry> 
+      <Entry> 1000 7.0 1e-8 </Entry> 
+      <Entry> 1000 7.1 1e-8 </Entry> 
+      <Entry> 1000 7.2 1e-8 </Entry> 
+      <Entry> 1000 7.3 1e-8 </Entry> 
+      <Entry> 1000 7.4 1e-8 </Entry> 
+      <Entry> 1000 7.5 1e-8 </Entry> 
+      <Entry> 1000 7.6 1e-8 </Entry> 
+      <Entry> 1000 7.7 1e-8 </Entry> 
+      <Entry> 1000 7.8 1e-8 </Entry> 
+      <Entry> 1000 7.9 1e-8 </Entry> 
+      <Entry> 1000 8.0 1e-8 </Entry> 
+      <Entry> 1000 8.1 1e-8 </Entry> 
+      <Entry> 1000 8.2 1e-8 </Entry> 
+      <Entry> 1000 8.3 1e-8 </Entry> 
+      <Entry> 1000 8.4 1e-8 </Entry> 
+      <Entry> 1000 8.5 1e-8 </Entry> 
+      <Entry> 1000 8.6 1e-8 </Entry> 
+      <Entry> 1000 8.7 1e-8 </Entry> 
+      <Entry> 1000 8.8 1e-8 </Entry> 
+      <Entry> 1000 8.9 1e-8 </Entry> 
+      <Entry> 1000 9.0 1e-8 </Entry> 
+      <Entry> 1000 9.1 1e-8 </Entry> 
+      <Entry> 1000 9.2 1e-8 </Entry> 
+      <Entry> 1000 9.3 1e-8 </Entry> 
+      <Entry> 1000 9.4 1e-8 </Entry> 
+      <Entry> 1000 9.5 1e-8 </Entry> 
+      <Entry> 1000 9.6 1e-8 </Entry> 
+      <Entry> 1000 9.7 1e-8 </Entry> 
+      <Entry> 1000 9.8 1e-8 </Entry> 
+      <Entry> 1000 9.9 1e-8 </Entry> 
+     </TimeQueue>
+  </OutputSnapshotWithHDF5Storage>
+</ConfigRoot>
