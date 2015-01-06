@@ -2,84 +2,72 @@ Basic Usage of ProtoMol
 =======================
 To run a ProtoMol simulation, a user needs to provide a configuration file that defines simulation initial conditions, integrator, outputs, and other simulation parameters. 
 
-  .. code:: bash
+.. code:: conf
 
-     ProtoMol your_file.conf
+   ProtoMol your_file.conf
 
 
 Overview of configuration file
 ---------------------------------------
 A minimal example of configuration file is presented below, with the meaning of each entry explained in the comment line. 
 
-  .. code-block:: bash
+.. code-block:: bash
+   
+   # Number of steps in simulation
+   numsteps 1000000
+         
+   firststep 0
 
-     # Number of steps in simulation
-     numsteps 100000000
+   # Simulation cell size
+   cellsize 5000000
 
-     # The number assigned to the first step
-     firststep 0
+   boundaryConditions vacuum
 
-     # Random Number seed
-     seed 11
+   # Cell Manager
+   cellManager Cubic
+   exclude none
 
-     # Simulation cell size
-     cellsize 5000000
+   # Initial position and velocitiy definition
+   posfile single_ion.pos_xyz
+   velfile single_ion.vel_xyz
 
-     # Boundary Conditions
-     boundaryConditions vacuum
+   # par and psf file definition
+   psffile single_ion.psf
+   parfile single_ion.par
 
-     # Cell Manager
-     cellManager Cubic
-     exclude none
+   # trajectory output file
+   XYZPosFile single_ion_trajectory.xyz
 
-     # Initial position and velocitiy definition
-     posfile sim_pos.xyz
-     psffile sim_vel.psf
+   # output frequency
+   outputfreq 2000
 
-     # Par file definition
-     parfile sim.par
+   # integrator definition
+   Integrator {
+     # use LeapFrog for 0th level integrator
+     level 0 LeapFrog {
+        # time step for this integrator
+    	timestep 2e7
 
-     # Output Setting
-     outputfreq 10000
-
-     # Integrator Setting
-     integrator {
-	    # 0th level integrator
-	    level 0 Leapfrog {
-
-	        # Time step in units of femto seconds
-	        timestep 1e8
-     
-                # Add Coulomb force between ions
-		# additional options for force are specified
-	        force Coulomb 
-                -algorithm NonbondedSimpleFull
-	    }
-     }
+	# force specification
+	force LQTForce 
+	-lqt-spec single_ion.xml 
+     } 
+   }
 
 The configurations are organized in the format of self-explanatory *keyword - value* pairs. The most important components are:
 
-- Definition of position (example file) and velocities (example file) for each particle in ``xyz`` format. 
-- Definition of particle parameters (mass, charge, *etc*), in ``psf`` (example file) and ``par`` (example file) format.
-- Definition of integrator, with the following syntax:
+- Definition of position and velocities for each particle in ``xyz`` format. 
+- Definition of particle parameters (mass, charge, *etc*), in ``psf`` and ``par`` format.
+- Definition of forces/integrators/outputs, which we detail below.
 
-  .. code-block:: bash
+Forces, Integrators and Outputs
+-------------------------------
+- ``ProtoMol`` forces are the actual forces in Newton's equation:
 
-     integrator {
-       level 0 integrator0 {
-         timestep N
-         force1
-	 force2
-	 ...
-       
-         level 1 integrator1 {
-         ...
-         }
-       }
-     }
-  The details are explained in the Quick Reference.
+.. math::
 
-- Definition of forces. The details are explained in the Quick Reference and :ref:`Addon_Forces`.
-  
+   m \frac{d^2 \vec{r}_i}{dt^2} = \sum_{all\, forces\, on\,i^{th}\,particle}\vec{F}
 
+- ``ProtoMol`` integrators specify how the equation of motion should be numerically integrated. For instance, it could be Rugga-Kutta method (:math:`O(4)`) or LeapFrog method (:math:`O(4)`, but more stable ), *etc*. Some mechansims which are difficult to be implemented as force, such as evaporation cooling or sympathetic cooling, can also be cast as an integrator.
 
+- ``ProtoMol`` outputs write particle's information to screen or an external file.

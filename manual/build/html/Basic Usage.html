@@ -53,28 +53,17 @@
   <div class="section" id="basic-usage-of-protomol">
 <h1>Basic Usage of ProtoMol<a class="headerlink" href="#basic-usage-of-protomol" title="Permalink to this headline">¶</a></h1>
 <p>To run a ProtoMol simulation, a user needs to provide a configuration file that defines simulation initial conditions, integrator, outputs, and other simulation parameters.</p>
-<blockquote>
-<div><div class="code bash highlight-python"><div class="highlight"><pre>ProtoMol your_file.conf
-</pre></div>
-</div>
-</div></blockquote>
 <div class="section" id="overview-of-configuration-file">
 <h2>Overview of configuration file<a class="headerlink" href="#overview-of-configuration-file" title="Permalink to this headline">¶</a></h2>
 <p>A minimal example of configuration file is presented below, with the meaning of each entry explained in the comment line.</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre><span class="c"># Number of steps in simulation</span>
-numsteps 100000000
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Number of steps in simulation</span>
+numsteps 1000000
 
-<span class="c"># The number assigned to the first step</span>
 firststep 0
-
-<span class="c"># Random Number seed</span>
-seed 11
 
 <span class="c"># Simulation cell size</span>
 cellsize 5000000
 
-<span class="c"># Boundary Conditions</span>
 boundaryConditions vacuum
 
 <span class="c"># Cell Manager</span>
@@ -82,57 +71,50 @@ cellManager Cubic
 exclude none
 
 <span class="c"># Initial position and velocitiy definition</span>
-posfile sim_pos.xyz
-psffile sim_vel.psf
+posfile single_ion.pos_xyz
+velfile single_ion.vel_xyz
 
-<span class="c"># Par file definition</span>
-parfile sim.par
+<span class="c"># par and psf file definition</span>
+psffile single_ion.psf
+parfile single_ion.par
 
-<span class="c"># Output Setting</span>
-outputfreq 10000
+<span class="c"># trajectory output file</span>
+XYZPosFile single_ion_trajectory.xyz
 
-<span class="c"># Integrator Setting</span>
-integrator <span class="o">{</span>
-       <span class="c"># 0th level integrator</span>
-       level <span class="m">0</span> Leapfrog <span class="o">{</span>
+<span class="c"># output frequency</span>
+outputfreq 2000
 
-           <span class="c"># Time step in units of femto seconds</span>
-           timestep 1e8
+<span class="c"># integrator definition</span>
+Integrator <span class="o">{</span>
+  <span class="c"># use LeapFrog for 0th level integrator</span>
+  level <span class="m">0</span> LeapFrog <span class="o">{</span>
+     <span class="c"># time step for this integrator</span>
+     timestep 2e7
 
-           <span class="c"># Add Coulomb force between ions</span>
-           <span class="c"># additional options for force are specified</span>
-           force Coulomb
-           -algorithm NonbondedSimpleFull
-       <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p>The configurations are organized in the format of self-explanatory <em>keyword - value</em> pairs. The most important components are:</p>
-<ul>
-<li><p class="first">Definition of position (example file) and velocities (example file) for each particle in <tt class="docutils literal"><span class="pre">xyz</span></tt> format.</p>
-</li>
-<li><p class="first">Definition of particle parameters (mass, charge, <em>etc</em>), in <tt class="docutils literal"><span class="pre">psf</span></tt> (example file) and <tt class="docutils literal"><span class="pre">par</span></tt> (example file) format.</p>
-</li>
-<li><p class="first">Definition of integrator, with the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre>integrator <span class="o">{</span>
-  level <span class="m">0</span> integrator0 <span class="o">{</span>
-    timestep N
-    force1
-    force2
-    ...
-
-    level <span class="m">1</span> integrator1 <span class="o">{</span>
-    ...
-    <span class="o">}</span>
+     <span class="c"># force specification</span>
+     force LQTForce
+     -lqt-spec single_ion.xml
   <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 </div>
-<p>The details are explained in the Quick Reference.</p>
-</li>
-<li><p class="first">Definition of forces. The details are explained in the Quick Reference and <em class="xref std std-ref">Addon_Forces</em>.</p>
-</li>
+<p>The configurations are organized in the format of self-explanatory <em>keyword - value</em> pairs. The most important components are:</p>
+<ul class="simple">
+<li>Definition of position and velocities for each particle in <tt class="docutils literal"><span class="pre">xyz</span></tt> format.</li>
+<li>Definition of particle parameters (mass, charge, <em>etc</em>), in <tt class="docutils literal"><span class="pre">psf</span></tt> and <tt class="docutils literal"><span class="pre">par</span></tt> format.</li>
+<li>Definition of forces/integrators/outputs, which we detail below.</li>
+</ul>
+</div>
+<div class="section" id="forces-integrators-and-outputs">
+<h2>Forces, Integrators and Outputs<a class="headerlink" href="#forces-integrators-and-outputs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">ProtoMol</span></tt> forces are the actual forces in Newton&#8217;s equation:</li>
+</ul>
+<div class="math">
+\[m \frac{d^2 \vec{r}_i}{dt^2} = \sum_{all\, forces\, on\,i^{th}\,particle}\vec{F}\]</div>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">ProtoMol</span></tt> integrators specify how the equation of motion should be numerically integrated. For instance, it could be Rugga-Kutta method (<span class="math">\(O(4)\)</span>) or LeapFrog method (<span class="math">\(O(4)\)</span>, but more stable ), <em>etc</em>. Some mechansims which are difficult to be implemented as force, such as evaporation cooling or sympathetic cooling, can also be cast as an integrator.</li>
+<li><tt class="docutils literal"><span class="pre">ProtoMol</span></tt> outputs write particle&#8217;s information to screen or an external file.</li>
 </ul>
 </div>
 </div>
@@ -147,6 +129,7 @@ integrator <span class="o">{</span>
   <ul>
 <li><a class="reference internal" href="#">Basic Usage of ProtoMol</a><ul>
 <li><a class="reference internal" href="#overview-of-configuration-file">Overview of configuration file</a></li>
+<li><a class="reference internal" href="#forces-integrators-and-outputs">Forces, Integrators and Outputs</a></li>
 </ul>
 </li>
 </ul>
