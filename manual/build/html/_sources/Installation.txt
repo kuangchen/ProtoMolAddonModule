@@ -1,7 +1,7 @@
 Installation 
 =============================
 
-Installation consists of the following steps. 
+Installation of ``ProtoMol`` addon module consists of the following steps. 
 
 1. Install all the dependencies: ``git``, ``boost``, ``HD5``, ``cmake``.
    
@@ -15,11 +15,12 @@ Installation consists of the following steps.
   
       git clone https://github.com/kuangchen/ProtoMolAddon.git
 
-3. Install the dependent packages (HDF5, Boost)   
-
-4. Compile the source code into binary:
+3. Compile the source code into binary:
 
    .. code-block:: bash
+
+      # Change directory
+      cd protomol
 		   
       # Build CMake cache
       cmake .
@@ -30,7 +31,7 @@ Installation consists of the following steps.
       # Link and install the executable into system directory
       sudo make install
 
-5.  After the installation, an executable named ``ProtoMol`` will be created in the system directory. To see whether the add-on package has been successfully installed, run :code:`ProtoMol --modules`, and the output should list ``addon`` as an installed module.
+4. After the installation, an executable named ``ProtoMol`` will be created in the system directory. To see whether the add-on package has been successfully installed, run :code:`ProtoMol --modules`, and the output should list ``addon`` as an installed module.
 
    .. code-block:: bash
       

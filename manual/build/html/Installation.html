@@ -52,7 +52,7 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Installation consists of the following steps.</p>
+<p>Installation of <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> addon module consists of the following steps.</p>
 <ol class="arabic">
 <li><p class="first">Install all the dependencies: <tt class="docutils literal"><span class="pre">git</span></tt>, <tt class="docutils literal"><span class="pre">boost</span></tt>, <tt class="docutils literal"><span class="pre">HD5</span></tt>, <tt class="docutils literal"><span class="pre">cmake</span></tt>.</p>
 <div class="highlight-bash"><div class="highlight"><pre>sudo apt-get install git libboost1.55-all-dev libhdf5-dev cmake
@@ -64,10 +64,11 @@
 </pre></div>
 </div>
 </li>
-<li><p class="first">Install the dependent packages (HDF5, Boost)</p>
-</li>
 <li><p class="first">Compile the source code into binary:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Build CMake cache</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Change directory</span>
+<span class="nb">cd </span>protomol
+
+<span class="c"># Build CMake cache</span>
 cmake .
 
 <span class="c"># Compile all cpp files</span>
@@ -79,10 +80,7 @@ sudo make install
 </div>
 </li>
 <li><p class="first">After the installation, an executable named <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> will be created in the system directory. To see whether the add-on package has been successfully installed, run <tt class="code docutils literal"><span class="pre">ProtoMol</span> <span class="pre">--modules</span></tt>, and the output should list <tt class="docutils literal"><span class="pre">addon</span></tt> as an installed module.</p>
-</li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>user@localhost:~<span class="nv">$ </span>ProtoMol --modules
+<div class="highlight-bash"><div class="highlight"><pre>user@localhost:~<span class="nv">$ </span>ProtoMol --modules
 Checkpoint                              Provides checkpointing support
 Addon                                   Addons <span class="k">for</span> simulating AMO systems
 BondedForces
@@ -105,7 +103,8 @@ Topology
 NormalMode
 </pre></div>
 </div>
-</div></blockquote>
+</li>
+</ol>
 </div>
 
 
