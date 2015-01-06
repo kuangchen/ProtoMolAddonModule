@@ -9,10 +9,9 @@ To run a ProtoMol simulation, a user needs to provide a configuration file that 
 
 Overview of configuration file
 ---------------------------------------
-These entries are organized in the format of self-explanatory *keyword - value* pairs. A minimal example of configuration file is presented below, with the meaning of each entry explained in the comment line. 
+A minimal example of configuration file is presented below, with the meaning of each entry explained in the comment line. 
 
-  .. hgithlight:: bash
-  .. code:: bash
+  .. code-block:: bash
 
      # Number of steps in simulation
      numsteps 100000000
@@ -22,9 +21,6 @@ These entries are organized in the format of self-explanatory *keyword - value* 
 
      # Random Number seed
      seed 11
-
-     # Initial temperature of particles
-     temperature 1e4
 
      # Simulation cell size
      cellsize 5000000
@@ -37,41 +33,53 @@ These entries are organized in the format of self-explanatory *keyword - value* 
      exclude none
 
      # Initial position and velocitiy definition
-     posfile ion_neutral_cooling_ini_pos_32.xyz
-     psffile ion_neutral_cooling_32.psf
+     posfile sim_pos.xyz
+     psffile sim_vel.psf
 
      # Par file definition
-     parfile ion_neutral_cooling.par
+     parfile sim.par
 
      # Output Setting
      outputfreq 10000
 
-     # Add IonSnapshot as the output
-     IonSnapshot ss.lua
-     
      # Integrator Setting
      integrator {
 	    # 0th level integrator
-	    level 0 LeapfrogBufferGas {
-	    timestep 1e8
-	    filename buffer_gas.lua	
-     
-	    # Add Coulomb force between ions
-	    force Coulomb 
-	    -algorithm NonbondedSimpleFull
+	    level 0 Leapfrog {
 
-	    # Add ion trap force
-	    force LQT 
-	    -lqt_filename trap.lua
+	        # Time step in units of femto seconds
+	        timestep 1e8
+     
+                # Add Coulomb force between ions
+		# additional options for force are specified
+	        force Coulomb 
+                -algorithm NonbondedSimpleFull
 	    }
      }
 
-To see the full list of supported keywords, refer to `ProtoMol Quick Reference`_.
+The configurations are organized in the format of self-explanatory *keyword - value* pairs. The most important components are:
 
-.. _`ProtoMol Quick Reference` : http://protomol.sourceforge.net/quickref.pdf
+- Definition of position (example file) and velocities (example file) for each particle in ``xyz`` format. 
+- Definition of particle parameters (mass, charge, *etc*), in ``psf`` (example file) and ``par`` (example file) format.
+- Definition of integrator, with the following syntax:
 
-The most important components are:
+  .. code-block:: bash
 
-- Definition of position and velocities for each particle in ``xyz`` format
-- Definition of particle parameters (mass, charge, *etc*), in ``psf`` and ``par`` format
-- Definition of addon components in ``xml`` format.
+     integrator {
+       level 0 integrator0 {
+         timestep N
+         force1
+	 force2
+	 ...
+       
+         level 1 integrator1 {
+         ...
+         }
+       }
+     }
+  The details are explained in the Quick Reference.
+
+- Definition of forces. The details are explained in the Quick Reference and :ref:`Addon_Forces`.
+  
+
+

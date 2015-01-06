@@ -54,21 +54,26 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>Installation consists of the following steps.</p>
 <ol class="arabic">
-<li><p class="first">Install all the dependencies: <tt class="docutils literal"><span class="pre">git</span></tt>, <tt class="docutils literal"><span class="pre">boost</span></tt>, <tt class="docutils literal"><span class="pre">HD5</span></tt>.</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>sudo apt-get install git libboost1.55-all-dev libhdf5-dev
+<li><p class="first">Install all the dependencies: <tt class="docutils literal"><span class="pre">git</span></tt>, <tt class="docutils literal"><span class="pre">boost</span></tt>, <tt class="docutils literal"><span class="pre">HD5</span></tt>, <tt class="docutils literal"><span class="pre">cmake</span></tt>.</p>
+<div class="highlight-bash"><div class="highlight"><pre>sudo apt-get install git libboost1.55-all-dev libhdf5-dev cmake
 </pre></div>
 </div>
 </li>
 <li><p class="first">Clone the <tt class="docutils literal"><span class="pre">ProtoMolAddon</span></tt> git repository to a local path:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>git clone https://github.com/kuangchen/ProtoMolAddon.git
+<div class="highlight-bash"><div class="highlight"><pre>git clone https://github.com/kuangchen/ProtoMolAddon.git
 </pre></div>
 </div>
 </li>
 <li><p class="first">Install the dependent packages (HDF5, Boost)</p>
 </li>
 <li><p class="first">Compile the source code into binary:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>cmake .
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Build CMake cache</span>
+cmake .
+
+<span class="c"># Compile all cpp files</span>
 make
+
+<span class="c"># Link and install the executable into system directory</span>
 sudo make install
 </pre></div>
 </div>
@@ -77,10 +82,11 @@ sudo make install
 </li>
 </ol>
 <blockquote>
-<div><div class="code bash highlight-python"><div class="highlight"><pre>Checkpoint                              Provides checkpointing support
-Addon                                   Addons for simulating AMO systems
+<div><div class="highlight-bash"><div class="highlight"><pre>user@localhost:~<span class="nv">$ </span>ProtoMol --modules
+Checkpoint                              Provides checkpointing support
+Addon                                   Addons <span class="k">for</span> simulating AMO systems
 BondedForces
-CommandLine                             Adds standard command line options.
+CommandLine                             Adds standard <span class="nb">command </span>line options.
 Configuration                           Configuration system.
 HessianIntegrator
 IO
