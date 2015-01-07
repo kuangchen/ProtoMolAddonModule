@@ -195,6 +195,185 @@ Here are the steps involved.
 
 Implement a new integrator
 --------------------------
+Suppose we would like to simulate evaporation of trapped ions, i.e. an ion which escapes the trapping region (a cylindrial volume defined by radius :math:`r_0` and :math:`z_0`) is considered forever lost and does not exert Coulomb force on the still trapped ions.
+
+To be compatible with the generic integrator template, the integrator would have the following syntax in ``ProtoMol``,
+
+.. code:: bash
+
+   Evaporation
+   -evaporation-spec your_spec.xml
+
+where ``Evaporation`` is the integrator *name*, ``-evaporation-spec`` is the integrator's *parameter* name. The single string argument after the parameter name, ``your_spec.xml``, contains the information about :math:`r_0` and :math:`x_0`. In the current implementation, the external file is in self-explainatory xml format. Nevertheless, you are free to choose the format you want (plain text, csv, *etc*).
+
+
+Here is the header file:
+
+.. code-block:: cpp
+
+   #ifndef _EVAPORATION_H
+   #define _EVAPORATION_H
+   
+   #include <string>
+   #include <memory>
+   #include <protomol/ProtoMolApp.h>
+   #include <protomol/addon/util/SIAtomProxyArray.h>
+   
+   namespace ProtoMolAddon {
+     namespace Util {
+       class SIAtomProxyArray;
+     }
+     
+     namespace Reaction {
+   
+       using namespace ProtoMol;
+       
+       class Evaporation {
+       private:
+         struct Spec {
+   	double r0;
+   	double z0;
+   	Spec() : r0(0), z0(0) {}
+   	Spec(const std::string &fname);
+         };
+   
+         Spec spec;
+         std::unique_ptr<Util::SIAtomProxyArray> ap_array_ptr;
+         
+       public:
+         Evaporation() {}
+         Evaporation(const Spec &spec) : spec(spec) {}
+   
+       public:
+         void Initialize(ProtoMolApp *app);
+         void Update(double now, double dt);
+         
+         static const std::string GetName() { return "Evaporation"; }
+         static const std::string GetParameterName() { return "-evaporation-spec"; }
+       };
+     }
+   }
+   
+   #endif
+   
+
+Here is the cpp file:
+
+.. code-block:: cpp
+
+   #include <protomol/addon/reaction/Evaporation.h>
+   #include <boost/property_tree/xml_parser.hpp>
+   
+   namespace ProtoMolAddon {
+     namespace Reaction {
+   
+       namespace pt = boost::property_tree;
+   
+       Evaporation::Spec::Spec(const std::string &fname) {
+         pt::ptree tree;
+         pt::read_xml(fname, tree);
+   
+         r0 = tree.get<double>("ConfigRoot.Evaporation.r0");
+         z0 = tree.get<double>("ConfigRoot.Evaporation.z0");
+       }
+       
+       void Evaporation::Initialize(ProtoMolApp *app) {
+         ap_array_ptr.reset(new Util::SIAtomProxyArray(app));
+       }
+   
+       void Evaporation::Update(double now, double dt) {
+         for (auto &ap: *ap_array_ptr) {
+   	   const Vector3D &pos = ap.GetPosition();
+   
+   	   if ( (ap.GetIntegerCharge()!=0) &&
+   	        ((pos[0]*pos[0] + pos[1]*pos[1]) > spec.r0 * spec.r0 ||
+   	         (fabs(pos[2]) > spec.z0)) )
+   	     ap.SetIntegerCharge(0);
+         }
+       }
+     }
+   }
+    
+Here are the steps involved:
+
+1. Create a new ``C++`` class (in this case, ``CEM``), and add necessary private variables.
+
+2. Create a class constructor that takes a single string argument. Also provide a default constructor that takes no argument.  
+
+3. Create a static :code:`GetName()` method with the signature:
+
+   .. code-block:: cpp
+
+      static std::string GetName();
+
+   which returns the keyword for the integrator in :code:`ProtoMol`. 
+
+4. Create a static :code:`GetParameterName()` method with the signature:
+
+   .. code-block:: cpp
+  
+      static std::string GetParameterName();
+   
+   which return the parameter name specific to this integrator, whose value is always a string. 
+
+
+5. Create a :code:`Initialize()` method with the signature:
+
+   .. code-block:: cpp
+
+     void Initialize(const ProtoMolApp *app);
+
+   This function is called before the numerical integration starts. So it is handy to do initialization work here. In this case, the ``app`` pointer is used to initialize an array of atom proxy.
+
+6. Create an :code:`Update()` method with the signature:
+
+   .. code-block:: cpp
+
+      void Update(double now);
+
+   This function is called at every integration step. In this case, ion's position is checked, and if the ion escape the trapping region, ion's charge is set to zero (a trick which makes ion not subject to trapping force and Coulomb force). ``now`` is the current simulation time in second.
+
+7. Register the new integrator in ``AddonModule.cpp``. First include the header file:
+
+   .. code-block:: cpp
+
+      #include <addon/reaction/Evaporation.h>
+
+   and add the following line in 
+
+   .. code-block:: cpp
+
+      void AddonModule::init(ProtoMol::ProtoMolApp *app) {
+        IntegratorFactory &i = app->integratorFactory;
+	// Add new integrator below
+	i.registerExemplar(new Template::GenericIntegrator<Reaction::Evaporation>());
+	// ...
+	// ...
+      }
+
+8. Re-compile the source code
+
+   .. code-block:: bash
+
+      cmake .
+      make
+      sudo make install
+
+   and then check if the output has been successfully added to the system:
+
+   .. code-block:: bash
+
+      ~$: ProtoMol --integrators
+      =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+= Integrators =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+      ... 
+      ... 
+      Evaporation
+      timestep                  <real,positive>               
+      -evaporation-spec         <string,non-empty>            
+      ... 
+      ... 
+
+
 
 Implement a new output
 ----------------------
@@ -340,7 +519,7 @@ and here is the cpp file:
      }
    }
    
-Here ar ehte steps involved:
+Here are the steps involved:
 
 1. Create a new ``C++`` class (in this case, ``CEM``), and add necessary private variables.
 
@@ -420,7 +599,10 @@ Here ar ehte steps involved:
       ~$: ProtoMol --outputs
 
       =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+= Outputs =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+      ... 
+      ... 
       CEM
       -cem-spec                 <string,non-empty>            
+      ... 
+      ... 
 
-      ...
