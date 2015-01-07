@@ -63,37 +63,29 @@
 <div class="section" id="lqtforce">
 <h3>LQTForce<a class="headerlink" href="#lqtforce" title="Permalink to this headline">¶</a></h3>
 <p>The trapping force from the electric potential of a linear quadrupole trap is given by</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\vec{F}(x, y, z) = -e\vec{\nabla} \phi(x, y, z)\]</div>
-</div></blockquote>
 <p>where</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\phi(x, y, z) = \frac{x^2-y^2}{r_0^2}v_{\mathrm{rf}}\cos(\Omega t) + \kappa\frac{z^2 - \frac{1}{2}(x^2+y^2)}{z_0^2 }v_{\mathrm{ec}}\]</div>
-</div></blockquote>
 <p>In <tt class="docutils literal"><span class="pre">ProtoMol</span></tt>, simulation of this force is provided by the keyword <tt class="docutils literal"><span class="pre">LQTForce</span></tt>, with the following syntax:</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>LQTForce
+<div class="highlight-bash"><div class="highlight"><pre>LQTForce
 -lqt-spec your_spec.xml
 </pre></div>
 </div>
-</div></blockquote>
 <p>where <tt class="docutils literal"><span class="pre">your-spec.xml</span></tt> is an xml file which contain the following fields:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
   <span class="nt">&lt;LQTSpec&gt;</span>
-    <span class="nt">&lt;r0&gt;</span> 12e-3 <span class="nt">&lt;/r0&gt;</span>
-    <span class="nt">&lt;z0&gt;</span> 21.5e-3 <span class="nt">&lt;/z0&gt;</span>
-    <span class="nt">&lt;v_rf&gt;</span> 43.75 <span class="nt">&lt;/v_rf&gt;</span>
-    <span class="nt">&lt;v_ec&gt;</span> 1 <span class="nt">&lt;/v_ec&gt;</span>
-    <span class="nt">&lt;kappa&gt;</span> 0.1275 <span class="nt">&lt;/kappa&gt;</span>
-    <span class="nt">&lt;omega&gt;</span> 300e3 <span class="nt">&lt;/omega&gt;</span>
+     <span class="nt">&lt;r0&gt;</span> 12e-3 <span class="nt">&lt;/r0&gt;</span>
+     <span class="nt">&lt;z0&gt;</span> 21.5e-3 <span class="nt">&lt;/z0&gt;</span>
+     <span class="nt">&lt;v_rf&gt;</span> 43.75 <span class="nt">&lt;/v_rf&gt;</span>
+     <span class="nt">&lt;v_ec&gt;</span> 1 <span class="nt">&lt;/v_ec&gt;</span>
+     <span class="nt">&lt;kappa&gt;</span> 0.1275 <span class="nt">&lt;/kappa&gt;</span>
+     <span class="nt">&lt;omega&gt;</span> 300e3 <span class="nt">&lt;/omega&gt;</span>
   <span class="nt">&lt;/LQTSpec&gt;</span>
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of these fields are given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -142,15 +134,12 @@
 <div class="math">
 \[V(x, y, z) = \frac{1}{2}m(\omega_x^2 x^2 + \omega_y^2 y^2 + \omega_z^2 z^2)\]</div>
 <p>In <tt class="docutils literal"><span class="pre">ProtoMol</span></tt>, simulation of this force is provided by the keyword <tt class="docutils literal"><span class="pre">HarmonicTrapForce</span></tt>, with the following syntax:</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>HarmonicTrapForce
+<div class="highlight-bash"><div class="highlight"><pre>HarmonicTrapForce
 -ht-spec your_spec.xml
 </pre></div>
 </div>
-</div></blockquote>
 <p>where <tt class="docutils literal"><span class="pre">your-spec.xml</span></tt> is an xml file which contain the following fields:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
   <span class="nt">&lt;HTSpec&gt;</span>
     <span class="nt">&lt;omega_x&gt;</span> 40e3 <span class="nt">&lt;/omega_x&gt;</span>
     <span class="nt">&lt;omega_y&gt;</span> 40e3 <span class="nt">&lt;/omega_y&gt;</span>
@@ -159,7 +148,6 @@
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of these fields are given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -191,23 +179,21 @@
 <div class="section" id="strayfieldforce">
 <h3>StrayFieldForce<a class="headerlink" href="#strayfieldforce" title="Permalink to this headline">¶</a></h3>
 <p>The force from a stray dc electric field is given by</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\vec{F}(x, y, z) = e\vec{E}(x, y, z)\]</div>
-</div></blockquote>
 <p>where <span class="math">\(\vec{E}(x, y, z)\)</span> is the stray electric field. The simulation of such force in <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> is provided through the keyword <tt class="docutils literal"><span class="pre">StrayFieldFoce</span></tt>, with the following syntax:</p>
-<blockquote>
-<div></div></blockquote>
+<div class="highlight-bash"><div class="highlight"><pre>StrayFieldForce
+-stray-field-spec your_spec.xml
+</pre></div>
+</div>
 <p>where <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is an xml file which contains the following field:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
   <span class="nt">&lt;StrayFieldSpec&gt;</span>
     <span class="nt">&lt;strength&gt;</span> 0 0 0.1 <span class="nt">&lt;/strength&gt;</span>
   <span class="nt">&lt;/StrayFieldSpec&gt;</span>
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of each field is given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -230,50 +216,44 @@
 <div class="section" id="lasercoolingdampingforce">
 <h3>LaserCoolingDampingForce<a class="headerlink" href="#lasercoolingdampingforce" title="Permalink to this headline">¶</a></h3>
 <p>The optical pressure force due to a laser is given by</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\vec{F} = \frac{ \hbar \vec{k} \gamma}{2} \frac{s}{1+s+4\frac{(\delta-\vec{k}\cdot\vec{v})^2}{\Gamma^2}}\]</div>
-</div></blockquote>
 <p>where <span class="math">\(s\)</span> is the saturation parameter, <span class="math">\(\vec{k}\)</span> is the wavevector, <span class="math">\(\gamma\)</span> is the spontanous emission rate of the excited state, <span class="math">\(\delta\)</span> is the detuning of the laser from the transition, <span class="math">\(\vec{v}\)</span> is velocity of laser-cooled atom.</p>
 <p>The simulation of such force in <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> is provided through the keyword <tt class="docutils literal"><span class="pre">LaserCoolingDampingForce</span></tt>, with the following syntax:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre>LaserCoolingDampingForce
+<div class="highlight-bash"><div class="highlight"><pre>LaserCoolingDampingForce
 -laser-cooling-damping-spec your_spec.xml
 </pre></div>
 </div>
-</div></blockquote>
 <p>where <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is an xml file which contains the following fields:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre> <span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre> <span class="nt">&lt;ConfigRoot&gt;</span>
    <span class="nt">&lt;LaserCoolingDampingSpec&gt;</span>
      <span class="nt">&lt;beam&gt;</span>
-       <span class="nt">&lt;label&gt;</span> main beam <span class="nt">&lt;/label&gt;</span>
-       <span class="nt">&lt;ion_name&gt;</span> Yb174 <span class="nt">&lt;/ion_name&gt;</span>
-       <span class="nt">&lt;t_start&gt;</span> 0 <span class="nt">&lt;/t_start&gt;</span>
-       <span class="nt">&lt;t_end&gt;</span> 10 <span class="nt">&lt;/t_end&gt;</span>
-       <span class="nt">&lt;n&gt;</span> 0.04932527561 -0.04932527561 -0.99756405026 <span class="nt">&lt;/n&gt;</span>
-       <span class="nt">&lt;k&gt;</span> 27100 <span class="nt">&lt;/k&gt;</span>
-       <span class="nt">&lt;s&gt;</span> 10 <span class="nt">&lt;/s&gt;</span>
-       <span class="nt">&lt;delta&gt;</span> -40e6 <span class="nt">&lt;/delta&gt;</span>
-       <span class="nt">&lt;gamma&gt;</span> 20e6 <span class="nt">&lt;/gamma&gt;</span>
+        <span class="nt">&lt;label&gt;</span> main beam <span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;ion_name&gt;</span> Yb174 <span class="nt">&lt;/ion_name&gt;</span>
+        <span class="nt">&lt;t_start&gt;</span> 0 <span class="nt">&lt;/t_start&gt;</span>
+        <span class="nt">&lt;t_end&gt;</span> 10 <span class="nt">&lt;/t_end&gt;</span>
+        <span class="nt">&lt;n&gt;</span> 0.04932527561 -0.04932527561 -0.99756405026 <span class="nt">&lt;/n&gt;</span>
+        <span class="nt">&lt;k&gt;</span> 27100 <span class="nt">&lt;/k&gt;</span>
+        <span class="nt">&lt;s&gt;</span> 10 <span class="nt">&lt;/s&gt;</span>
+        <span class="nt">&lt;delta&gt;</span> -40e6 <span class="nt">&lt;/delta&gt;</span>
+        <span class="nt">&lt;gamma&gt;</span> 20e6 <span class="nt">&lt;/gamma&gt;</span>
      <span class="nt">&lt;/beam&gt;</span>
 
      <span class="nt">&lt;beam&gt;</span>
-       <span class="nt">&lt;label&gt;</span> retro beam <span class="nt">&lt;/label&gt;</span>
-       <span class="nt">&lt;ion_name&gt;</span> Yb174 <span class="nt">&lt;/ion_name&gt;</span>
-       <span class="nt">&lt;t_start&gt;</span> 0 <span class="nt">&lt;/t_start&gt;</span>
-       <span class="nt">&lt;t_end&gt;</span> 10 <span class="nt">&lt;/t_end&gt;</span>
-       <span class="nt">&lt;n&gt;</span> -0.04932527561 0.04932527561 0.99756405026 <span class="nt">&lt;/n&gt;</span>
-       <span class="nt">&lt;k&gt;</span> 27100 <span class="nt">&lt;/k&gt;</span>
-       <span class="nt">&lt;s&gt;</span> 10 <span class="nt">&lt;/s&gt;</span>
-       <span class="nt">&lt;delta&gt;</span> -40e6 <span class="nt">&lt;/delta&gt;</span>
-       <span class="nt">&lt;gamma&gt;</span> 20e6 <span class="nt">&lt;/gamma&gt;</span>
+        <span class="nt">&lt;label&gt;</span> retro beam <span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;ion_name&gt;</span> Yb174 <span class="nt">&lt;/ion_name&gt;</span>
+        <span class="nt">&lt;t_start&gt;</span> 0 <span class="nt">&lt;/t_start&gt;</span>
+        <span class="nt">&lt;t_end&gt;</span> 10 <span class="nt">&lt;/t_end&gt;</span>
+        <span class="nt">&lt;n&gt;</span> -0.04932527561 0.04932527561 0.99756405026 <span class="nt">&lt;/n&gt;</span>
+        <span class="nt">&lt;k&gt;</span> 27100 <span class="nt">&lt;/k&gt;</span>
+        <span class="nt">&lt;s&gt;</span> 10 <span class="nt">&lt;/s&gt;</span>
+        <span class="nt">&lt;delta&gt;</span> -40e6 <span class="nt">&lt;/delta&gt;</span>
+        <span class="nt">&lt;gamma&gt;</span> 20e6 <span class="nt">&lt;/gamma&gt;</span>
      <span class="nt">&lt;/beam&gt;</span>
   <span class="nt">&lt;/LaserCoolingDampingSpec&gt;</span>
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The part between <tt class="code docutils literal"><span class="pre">&lt;beam&gt;</span></tt> and <tt class="code docutils literal"><span class="pre">&lt;/beam&gt;</span></tt> contains simulation parameters that need to be changed. The meaning of each property node is given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -336,20 +316,15 @@
 <div class="section" id="simpledampingforce">
 <h3>SimpleDampingForce<a class="headerlink" href="#simpledampingforce" title="Permalink to this headline">¶</a></h3>
 <p>The simple damping force is given by</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\vec{F} = -\alpha \vec{v}\]</div>
-</div></blockquote>
 <p>where <span class="math">\(\alpha\)</span> is the proportionality factor. The simulation of this force is provided by the keyword <tt class="docutils literal"><span class="pre">SimpleDampingForce</span></tt>, with the following syntax:</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>SimpleDampingForce
+<div class="highlight-bash"><div class="highlight"><pre>SimpleDampingForce
 -simple-damping-spec your_spec.xml
 </pre></div>
 </div>
-</div></blockquote>
 <p>where <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is an xml file which contains the following field:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
   <span class="nt">&lt;SimpleDampingSpec&gt;</span>
     <span class="nt">&lt;entry&gt;</span>
       <span class="nt">&lt;label&gt;</span> DummyLabel <span class="nt">&lt;/label&gt;</span>
@@ -362,7 +337,6 @@
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of these fields are given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -404,36 +378,28 @@
 <li>Multiple damping forces (for instance, a strong damping on Yb174 and a weak damping on Yb 176) are specified by stacking more <tt class="docutils literal"><span class="pre">&lt;entry&gt;...&lt;/entry&gt;</span></tt> blocks.</li>
 </ul>
 </div>
-<div class="section" id="radialquenchingforce">
-<h3>RadialQuenchingForce<a class="headerlink" href="#radialquenchingforce" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="patchfieldforce">
+<h3>PatchFieldForce<a class="headerlink" href="#patchfieldforce" title="Permalink to this headline">¶</a></h3>
 <p>The patch potential on the electrodes of linear quadrupole trap results in a force given by</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\vec{F}(x, y, z) = -e \vec{\nabla}\phi(x, y, z)\]</div>
-</div></blockquote>
 <p>where</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\phi(x, y, z) = \frac{x^2-y^2}{r_0^2} V_p\]</div>
-</div></blockquote>
-<p>The simulation of such force in <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> is provided through the keyword <tt class="docutils literal"><span class="pre">RadialQuenchingForce</span></tt>, with the following syntax:</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>RadialQuenchingForce
--raidal-quenching-spec your_spec.xml
+<p>The simulation of such force in <tt class="docutils literal"><span class="pre">ProtoMol</span></tt> is provided through the keyword <tt class="docutils literal"><span class="pre">PatchFieldForce</span></tt>, with the following syntax:</p>
+<div class="highlight-bash"><div class="highlight"><pre>PatchFieldForce
+-pf-spec your_spec.xml
 </pre></div>
 </div>
-</div></blockquote>
 <p>where <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is an xml file which contains the following fields:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
-  <span class="nt">&lt;RadialQuenchingSpec&gt;</span>
-    <span class="nt">&lt;r0&gt;</span> 12e-3 <span class="nt">&lt;/r0&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+  <span class="nt">&lt;PatchFieldSpec&gt;</span>
+       <span class="nt">&lt;r0&gt;</span> 12e-3 <span class="nt">&lt;/r0&gt;</span>
     <span class="nt">&lt;v&gt;</span> 0.01 <span class="nt">&lt;/v&gt;</span>
-  <span class="nt">&lt;/RadialQuenchingSpec&gt;</span>
+  <span class="nt">&lt;/PatchFieldSpec&gt;</span>
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of these fields are given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -463,14 +429,11 @@
 <div class="section" id="leapfrogbuffergasisotropic">
 <h3>LeapFrogBufferGasIsotropic<a class="headerlink" href="#leapfrogbuffergasisotropic" title="Permalink to this headline">¶</a></h3>
 <p>Sympathetic cooling of ions through collisions with cold neutral atoms can be modeled (to a good approximation) as happening at a rate of</p>
-<blockquote>
-<div><div class="math">
+<div class="math">
 \[\Gamma = 2\pi\rho\sqrt{\alpha/2\mu}\]</div>
-</div></blockquote>
 <p>where <span class="math">\(\mu\)</span> is the reduced mass of the ion and neutral atom system. In addition, each collision is assumed to scatter the relative velocity isotropically into <span class="math">\(4\pi\)</span> solid angle.</p>
 <p>The simulation of such process is simulated through an integrator with keyword <tt class="docutils literal"><span class="pre">LeapfrogBufferGasIsotropic</span></tt>, with the following syntax:</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>level X LeapfrogBufferGasIsotropic <span class="o">{</span>
+<div class="highlight-bash"><div class="highlight"><pre>level X LeapfrogBufferGasIsotropic <span class="o">{</span>
   timestep N
   filename your_spec.xml
 
@@ -479,12 +442,10 @@
 <span class="o">}</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>where <tt class="docutils literal"><span class="pre">timestep</span></tt> is the length of integration time step in femtosecond, and <tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> is an xml file which contains the following field:</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
   <span class="nt">&lt;BufferGas&gt;</span>
-    <span class="nt">&lt;m&gt;</span> 40 <span class="nt">&lt;/m&gt;</span>
+         <span class="nt">&lt;m&gt;</span> 40 <span class="nt">&lt;/m&gt;</span>
     <span class="nt">&lt;name&gt;</span> Ca <span class="nt">&lt;/name&gt;</span>
     <span class="nt">&lt;alpha&gt;</span> 159.4 <span class="nt">&lt;/alpha&gt;</span>
     <span class="nt">&lt;T&gt;</span> 5e-3 <span class="nt">&lt;/T&gt;</span>
@@ -494,7 +455,6 @@
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of these fields are given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -548,14 +508,11 @@
 <p>For example, suppose we would like to monitor the reduction of trapped ion&#8217;s secular energy <span class="math">\(T_{sec}\)</span>  when ions are sympathetically cooled by surrounding ultracold atoms. Given the cooling rate, we decide to calculate <span class="math">\(T_{sec}(t)\)</span> at several checkpoints, i.e. <span class="math">\(t = 0, 0.25, 0.5, 0.75\ \mathrm{and}\ 1 \mathrm{sec}\)</span>. This means ion&#8217;s trajectories over a few micromotion cycles at these checkpoints should be stored.</p>
 <p>The data at each checkpoint is called a <em>snapshot</em>, and it is saved as a <em>single</em> HDF5 file. Each snapshot consists of several <em>frames</em>, where each frame contains all ion&#8217;s positions and velocities, <span class="math">\(N_{\mathrm{ion}}\times 6\)</span> real numbers in total.</p>
 <p><tt class="docutils literal"><span class="pre">OutputSnapshotWithHDf5Storage</span></tt> only take one string argument, which contains the following field</p>
-<blockquote>
-<div><div class="highlight-bash"><div class="highlight"><pre>OutputSnapshotWithHDF5Storage your_spec.xml
+<div class="highlight-bash"><div class="highlight"><pre>OutputSnapshotWithHDF5Storage your_spec.xml
 </pre></div>
 </div>
-</div></blockquote>
 <p><tt class="docutils literal"><span class="pre">your_spec.xml</span></tt> points to an xml file which contains the following fields,</p>
-<blockquote>
-<div><div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;ConfigRoot&gt;</span>
   <span class="nt">&lt;OutputSnapshotWithHDF5Storage&gt;</span>
     <span class="nt">&lt;FileNamePattern&gt;</span>snapshot_%d.h5<span class="nt">&lt;/FileNamePattern&gt;</span>
     <span class="nt">&lt;TimeQueue&gt;</span>
@@ -570,7 +527,6 @@
 <span class="nt">&lt;/ConfigRoot&gt;</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The meaning of these fields are given below:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -612,7 +568,7 @@
 <li><a class="reference internal" href="#strayfieldforce">StrayFieldForce</a></li>
 <li><a class="reference internal" href="#lasercoolingdampingforce">LaserCoolingDampingForce</a></li>
 <li><a class="reference internal" href="#simpledampingforce">SimpleDampingForce</a></li>
-<li><a class="reference internal" href="#radialquenchingforce">RadialQuenchingForce</a></li>
+<li><a class="reference internal" href="#patchfieldforce">PatchFieldForce</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#integrators">Integrators</a><ul>
