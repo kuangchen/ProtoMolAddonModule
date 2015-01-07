@@ -1,68 +1,122 @@
 Write Your Own Component
 =======================
-This chapter discusses how to write your own forces, integrators and outputs.
+Writing your own forces/integrators/outputs is described in detail in the ``ProtoMol`` how-to guide. Interested readers are highly suggested to read the guide.
 
+However, the instructions provided by the guide is quite tedious: similar code need be written each time a new force/integrator/output is created. The situation is only made worse by the fact ``ProtoMol`` uses a different system from SI. 
+
+To alleviate the problem, a ``C++`` template has been introduced, which enables the user the focus more on the physical and mathematical part of the simulation problem, instead of spending time interfacing with ``ProtoMol``.
+
+This chapter explains how to use the template class through three examples.
 
 Implement a new force
 ---------------------
+Suppose we would like to implement the new force :math:`\vec{F}` due to a stray electric field :math:`\vec{E}`, 
 
-In the ``ProtoMol`` how-to guide, there is a chapter with detailed instructions on implementing a new force. The procedure is tedious, and has to repeated each time a new force needs to be implemented. To simplify this process a generic force C++ template is introduced, which enables user to focus more on mathematical part and less on interfacing with :code:`ProtoMol`, with little loss of the flexibility how the force is specified in :code:`ProtoMol`. 
+.. math::
 
-Suppose we would like to implement the new force due to a stray electric field, 
+   \vec{F}(x, y, z) = e\vec{E}(x, y, z)
 
-  .. math::
-     \vec{F}(x, y, z) = e\vec{E}(x, y, z)
+where :math:`e` is the charge of the particle.
 
-where :math:`\vec{E}(x, y, z)` is the stray electric field, and :math:`e` is the charge of the particle. To be compatible with the generic force template, the information about :math:`E` is moved into a single external file, whose name is the argument after the parameter keyword :code:`-stray-field-spec`. In :code:`ProtoMol`, the force would have the following syntax,
+To be compatible with the generic force template, the force would have the following syntax in ``ProtoMol``, 
 
-   .. code-block:: xml
+.. code-block:: bash
       
-      StrayFieldForce
-      -stray-field-spec your_spec.xml
+   StrayFieldForce
+   -stray-field-spec your_spec.xml
 
-where :code:`StrayFieldForce` is the *force name*, :code:`-stray-field-spec` is force's *parameter name*. 
-In the current implementation, the external file is in self-explainatory xml format. Nevertheless, you are free to choose the format you want (plain text, csv, *etc*).
+where :code:`StrayFieldForce` is the *force name*, :code:`-stray-field-spec` is force's *parameter name*. The single string argument after the parameter name, ``your_spec.xml``, contains the information about :math:`E`. In the current implementation, the external file is in self-explainatory xml format. Nevertheless, you are free to choose the format you want (plain text, csv, *etc*).
 
-Here are the steps involved:
+Below is the header file:
 
-   .. code-block:: cpp
+.. code-block:: cpp
 
-      #ifndef _STRAY_FIELD_H
-      #define _STRAY_FIELD_H
-      
-      #include <protomol/addon/util/SIAtomProxy.h>
-      #include <protomol/type/Vector3D.h>
-      
-      namespace ProtoMolAddon {
-        namespace Util {
-          class ConstSIAtomProxy; // Forward declaration of the proxy class
-        }
-      
-        using namespace ProtoMol;
-      
-        class StrayField {  // Step #1
-	private:
-	  Vector3D field;   // Step #1
-      
-        public:
-          StrayField() {}   // Step #2, default constructor
-          StrayField(const std::string &fname);  // Step #2, constructor with a string
-      
-          static std::string GetName() { return "StrayFieldForce"; } // Step 3, set force name
+   // addon/stray_field.h
+   #ifndef _STRAY_FIELD_H
+   #define _STRAY_FIELD_H
+   
+   #include <protomol/addon/util/ConstSIAtomProxy.h>
+   #include <protomol/type/Vector3D.h>
+   #include <iosfwd>
+   
+   namespace ProtoMolAddon {
+     namespace Util {
+       class ConstSIAtomProxy;
+     }
+   
+     namespace StrayField {
+   
+       using namespace ProtoMol;
+   
+       class StrayField {
+       public:
+         struct Spec {
+           Vector3D field;
+   
+           Spec() {}
+           Spec(const std::string &fname);
+         };
+   
+       private:
+         Spec spec;
+   
+       public:
+         StrayField() {}
+         StrayField(const Spec &spec);
+   
+         static std::string GetName() { return "StrayFieldForce"; }
+	 
+         static std::string GetParameterName() { return "-stray-field-spec"; }
+   
+         Vector3D GetForce(const Util::ConstSIAtomProxy &atom, double now) const;
+       };
+     }
+   }
+   
+   #endif
 
-          static std::string GetParameterName() { return "-stray-field-spec"; } // Step 4, set force parameter name
-          Vector3D GetForce(const Util::ConstSIAtomProxy &atom, double now) const;  // Step 5, compute the force
-        };
-      }
-    
-          
-      #endif
 
-1. Create a new ``C++`` class (e.g. ``MyStrayField``), preferably in the :code:`ProtoMolAddon` namespace. Add any private variables in a header file.
+and below is the cpp file.
+
+.. code-block:: cpp
+
+   #include <protomol/addon/stray_field/StrayField.h>
+   #include <protomol/addon/Constants.h>
+   #include <boost/property_tree/ptree.hpp>
+   #include <boost/property_tree/xml_parser.hpp>
+   #include <boost/algorithm/string.hpp>
+   #include <iostream>
+   
+   namespace ProtoMolAddon {
+     namespace StrayField {
+   
+       namespace pt = boost::property_tree;
+       namespace algorithm = boost::algorithm;
+   
+       StrayField::Spec::Spec(const std::string &fname) {
+         pt::ptree tree;
+         pt::read_xml(fname, tree);
+         field = tree.get<Vector3D>("ConfigRoot.StrayField");
+       }
+       
+       StrayField::StrayField(const StrayField::Spec &spec): spec(spec) {}
+   
+       Vector3D StrayField::GetForce(const Util::ConstSIAtomProxy &atom, double now) const {
+         return spec.field * atom.GetCharge();
+       }
+       
+     }
+   }
+   
+
+Here are the steps involved.  
+
+   
+1. Create a new ``C++`` class (in this case, ``StrayField``), and add necessary private variables.
 
 2. Create a class constructor that takes a single string argument. Also provide a default constructor that takes no argument.  
 
-3. Create a :code:`GetName()` method with the signature:
+3. Create a static :code:`GetName()` method with the signature:
 
    .. code-block:: cpp
 
@@ -70,7 +124,7 @@ Here are the steps involved:
 
    which returns the keyword for the force in :code:`ProtoMol`. 
 
-4. Create a :code:`GetParameterName()` method with the signature:
+4. Create a static :code:`GetParameterName()` method with the signature:
 
    .. code-block:: cpp
   
@@ -85,43 +139,21 @@ Here are the steps involved:
 
      Vector3D GetForce(const Util::ConstSIAtomProxy &atom, double now) const;
 
-   This method computes the force on each atom. 
+   This method computes the force on each atom. Note that this method operates on a constant atom proxy, thus does not modify atom's position/velocity/label. ``now`` is the current simulation time in second. The returned value is the force on that atom also in SI unit. 
 
-6. Implement the details of class constructor and method :code:`GetForce()` in a cpp file.
-
-   .. code-block:: cpp
-		   
-      #include <protomol/addon/MyStrayField.h>
-		   
-      MyStrayField::MyStrayField(const std::string &fname)
-		   : field()
-      {
-        // Open the file and read the content into field
-        std::ifstream is(fname);		   
-	is >> field;
-      }
-
-      Vector3D MyStrayField::GetForce(const Util::ConstSIAtomProxy &atom, double now) const {
-        return field * atom.GetCharge();
-      }
-
-   Note that :code:`atom` is an proxy class which facilitates unit conversion between SI and :code:`ProtoMol`. The returned force is in SI unit.
-
-7. Register the new force in the :code:`AddonModule.cpp`:
-
-- include the header file 
+6. Register the new force in the ``AddonModule.cpp``, by including the header file
 
   .. code-block:: cpp
 
-     #include <addon/MyStrayFieldForce.h> # Step 7, change to the path on your system
+     #include <addon/stray_field/StrayField.h> 
 
-- add these two lines
+  and add these two lines 
 
   .. code-block:: cpp
 
      if (equalNocase(boundConds, PeriodicBoundaryConditions::keyword)) {
        // ...
-       f.registerExemplar(new Template::GenericForce<PeriodicBoundaryConditions, MyStrayFieldForce>()); # Step 7
+       f.registerExemplar(new Template::GenericForce<PeriodicBoundaryConditions, StrayField::FieldForce>());
      }
    
   and 
@@ -130,7 +162,7 @@ Here are the steps involved:
 
      if (equalNocase(boundConds, PeriodicBoundaryConditions::keyword)) {
        // ...
-       f.registerExemplar(new Template::GenericForce<VacuumBoundaryConditions, MyStrayFieldForce>()); # Step 7
+       f.registerExemplar(new Template::GenericForce<VacuumBoundaryConditions, StrayField::StrayField>()); # Step 7
      }
    
 
@@ -147,14 +179,248 @@ Here are the steps involved:
    .. code-block:: bash
 		   
       ~$:ProtoMol --forces
-      
+
+      =+=+=+=+=+=+=+=+=+=+= Forces periodic boundary conditions =+=+=+=+=+=+=+=+=+=+=+
       ...
-      MyStrayFieldForce
-      -my-stray-field-spec      <string=>                     
+      StrayFieldForce
+      -stray-field-spec      <string=>                     
       ...
-      
+
+      =+=+=+=+=+=+=+=+=+=+=+ Forces vacuum boundary conditions +=+=+=+=+=+=+=+=+=+=+=+
+
+      StrayFieldForce
+      -stray-field-spec         <string=>                     
+
 
 
 Implement a new integrator
 --------------------------
 
+Implement a new output
+----------------------
+Suppose we would like to simulate the time-of-flight and ions' position/velocity when ions hit a channel electron multiplier (CEM). The multipler is approximated as a circular area with radius :math:`r_{cem}` and position :math:`x_{cem}` along the ejection direction.
+
+To be compatible with the generic output template, the output would have the following syntax in ``ProtoMol``,
+
+.. code:: bash
+
+   CEM
+   -cem-spec your_spec.xml
+
+where ``CEM`` is the output *name*, ``-cem-spec`` is the output's *parameter* name. The single string argument after the parameter name, ``your_spec.xml``, contains the information about :math:`r_{cem}` and :math:`x_{cem}`. In the current implementation, the external file is in self-explainatory xml format. Nevertheless, you are free to choose the format you want (plain text, csv, *etc*).
+
+Here is the header file:
+
+.. code-block:: cpp
+
+   #ifndef _CEM_H
+   #define _CEM_H
+   
+   #include <protomol/type/Vector3DBlock.h>
+   #include <protomol/addon/util/ConstSIAtomProxyArray.h>
+   #include <memory>
+   #include <map>
+   #include <vector>
+   #include <string>
+   #include <iosfwd>
+   
+   namespace ProtoMolAddon {
+   
+     namespace Util {
+       class ConstSIAtomProxy;
+       class ConstSIAtomProxyArray;
+     }
+     
+     namespace ToF {
+       
+       using namespace ProtoMol;
+   
+       class CEM {
+       public:
+         typedef enum ion_status { flying = 0, hit = 1 } ion_status;
+         
+         struct Spec {
+   	   double x_cem;
+   	   double r_cem;
+   	   std::string fname;
+   
+   	   Spec() {}
+   	   Spec(const std::string &fname);
+         };
+   
+         struct HitEntry {
+   	   double t;
+   	   Vector3D pos;
+   	   Vector3D vel;
+
+	   HitEntry(double t, Vector3D pos, Vector3D vel) :
+   	     t(t), pos(pos), vel(vel) {}
+   
+   	   HitEntry() {}
+         };
+         
+       private:
+         Spec spec;
+         std::map<Util::ConstSIAtomProxy, HitEntry> hit_entry_map;
+         std::unique_ptr<Util::ConstSIAtomProxyArray> ap_array_ptr;
+         
+       public:
+         CEM() {}
+         CEM(const Spec &spec);
+         
+         void Initialize(const ProtoMolApp *app);
+         void Update(double now);
+         void Finalize();
+   
+         static std::string GetName() { return "CEM"; }
+         static std::string GetParameterName() { return "-cem-spec"; }
+       };
+   
+     }
+   }
+   
+   
+   #endif
+   
+and here is the cpp file:
+
+.. code-block:: cpp
+
+   #include <protomol/addon/tof/CEM.h>
+   #include <iostream>
+   #include <boost/property_tree/ptree.hpp>
+   #include <boost/property_tree/xml_parser.hpp>
+   #include <boost/algorithm/string.hpp>
+   
+   namespace ProtoMolAddon {
+     namespace ToF {
+   
+       namespace pt = boost::property_tree;
+       namespace algorithm = boost::algorithm;
+       
+       CEM::Spec::Spec(const std::string &conf_fname) {
+         pt::ptree tree;
+         pt::read_xml(conf_fname, tree);
+   
+         x_cem = tree.get<double>("ConfigRoot.CEM.x_cem");
+         r_cem = tree.get<double>("ConfigRoot.CEM.r_cem");
+         fname = tree.get<std::string>("ConfigRoot.CEM.fname");
+         algorithm::trim(fname);
+       }
+   
+       CEM::CEM(const CEM::Spec &spec) :
+         spec(spec) {
+       }
+   
+       void CEM::Initialize(const ProtoMolApp *app) {
+         ap_array_ptr.reset(new Util::ConstSIAtomProxyArray(app));
+       }
+   
+       void CEM::Update(double now) {
+         for (auto ap: *ap_array_ptr) {
+   	   if (hit_entry_map.count(ap) == 0) {
+   	     const Vector3D &pos = ap.GetPosition();
+   	     if (pos[0] > spec.x_cem &&
+   	        ((pos[1]*pos[1] + pos[2]*pos[2]) < spec.r_cem * spec.r_cem))
+               hit_entry_map[ap] = HitEntry(now, pos, ap.GetVelocity());
+   	   }
+         }
+       }
+   
+       void CEM::Finalize() {
+         std::ofstream os(spec.fname);
+         
+         for (auto &kv: hit_entry_map) {
+           os << kv.first.GetName() << "\t"
+   	      << kv.second.t << "\t"
+              << kv.second.pos << "\t"
+   	      << kv.second.vel << std::endl;
+         }
+       }
+     }
+   }
+   
+Here ar ehte steps involved:
+
+1. Create a new ``C++`` class (in this case, ``CEM``), and add necessary private variables.
+
+2. Create a class constructor that takes a single string argument. Also provide a default constructor that takes no argument.  
+
+3. Create a static :code:`GetName()` method with the signature:
+
+   .. code-block:: cpp
+
+      static std::string GetName();
+
+   which returns the keyword for the output in :code:`ProtoMol`. 
+
+4. Create a static :code:`GetParameterName()` method with the signature:
+
+   .. code-block:: cpp
+  
+      static std::string GetParameterName();
+   
+   which return the parameter name specific to this output, whose value is always a string. 
+
+
+5. Create a :code:`Initialize()` method with the signature:
+
+   .. code-block:: cpp
+
+     void Initialize(const ProtoMolApp *app);
+
+   This function is called before the numerical integration starts. So it is handy to do initialization work here. In this case, the ``app`` pointer is used to initialize an array of constant atom proxy.
+
+6. Create an :code:`Update()` method with the signature:
+
+   .. code-block:: cpp
+
+      void Update(double now);
+
+   This function is called everytime an output event (specified by ``outputfreq`` keyword in the configuration file) occurs. In this case, atom's position is checked and get saved if the atom hit the detector screen for the first time. ``now`` is the current simulation time in second.
+
+7. Create a :code:`Finalize()` method with the signature:
+
+   .. code-block:: cpp
+
+      void Finalize()
+
+   This function is called after the numerical integration is finished. In this case, atom's information saved in the ``Update()`` step is written to a pre-specified external file. 
+
+8. Register the new output in ``AddonModule.cpp``. First include the header file:
+
+   .. code-block:: cpp
+
+      #include <addon/tof/CEM.h>
+
+   and add the following line in 
+
+   .. code-block:: cpp
+
+      void AddonModule::init(ProtoMol::ProtoMolApp *app) {
+        OutputFactory &f = app->outputFactory;
+	// Add new output below
+	f.registerExemplar(new Template::GenericOutput<ToF::CEM>());
+	// ...
+	// ...
+      }
+
+9. Re-compile the source code
+
+   .. code-block:: bash
+
+      cmake .
+      make
+      sudo make install
+
+   and then check if the output has been successfully added to the system:
+
+   .. code-block:: bash
+
+      ~$: ProtoMol --outputs
+
+      =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+= Outputs =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+      CEM
+      -cem-spec                 <string,non-empty>            
+
+      ...
